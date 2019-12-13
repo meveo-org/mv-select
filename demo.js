@@ -4,6 +4,7 @@ import "./mv-select.js";
 export class MvSelectDemo extends LitElement {
   static get properties() {
     return {
+      value: { type: Object, attribute: false, reflect: true },
       options: { type: Array, attribute: false, reflect: true }
     };
   }
@@ -19,6 +20,7 @@ export class MvSelectDemo extends LitElement {
 
   constructor() {
     super();
+    this.value = {};
     this.options = [
       {
         label: "Option 1",
@@ -61,9 +63,37 @@ export class MvSelectDemo extends LitElement {
 
   render() {
     return html`
-      <mv-select .options="${this.options}"></mv-select>
+      <h3>Default</h3>
+      <mv-select
+        .options="${this.options}"
+        @select-option="${this.displayValue("default")}"
+      ></mv-select>
+      <pre>${this.value.default || "{}"}</pre>
+      
+      <h3>Searchable</h3>
+      <mv-select
+        .options="${this.options}"
+        @select-option="${this.displayValue("searchable")}"
+        search
+      ></mv-select>
+      <pre>${this.value.searchable || "{}"}</pre>
+
+      <h3>Always open</h3>
+      <mv-select
+        .options="${this.options}"
+        @select-option="${this.displayValue("alwaysOpen")}"
+        always-open
+      ></mv-select>
+      <pre>${this.value.alwaysOpen || "{}"}</pre>
     `;
   }
+
+  displayValue = name => {
+    return event => {
+      const { detail: { option } } = event;
+      this.value = { ...this.value, [name]: JSON.stringify(option, null, 2) };
+    };
+  };
 }
 
 customElements.define("mv-select-demo", MvSelectDemo);
