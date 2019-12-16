@@ -6,7 +6,7 @@ export class MvSelect extends LitElement {
       value: { type: Object, attribute: false, reflect: true },
       options: { type: Array, attribute: false, reflect: true },
       open: { type: Boolean, attribute: true, reflect: true },
-      search: { type: Boolean, attribute: true },
+      searchable: { type: Boolean, attribute: true },
       "always-open": { type: Boolean, attribute: true },
       "multi-select": { type: Boolean, attribute: true }
     };
@@ -19,7 +19,7 @@ export class MvSelect extends LitElement {
 				--mv-select-font-family: var(--font-family, Arial);
 				--mv-select-font-size: var(--font-size-m, 10pt);
         --color: var(--mv-select-color, #777);
-        --max-width: var(--mv-select-max-width, 200px);
+        --width: var(--mv-select-width, 200px);
         --input-padding: var(--mv-select-input-padding, 4px);
         --outside-padding: calc(var(--input-padding) * 2);
         --max-height: calc(var(--mv-select-font-size) + var(--outside-padding));
@@ -32,14 +32,25 @@ export class MvSelect extends LitElement {
         --dropdown-icon-button-color: var(--mv-select-dropdown-icon-button-color, var(--color));
         --option-max-height: var(--mv-select-option-max-height, 250px);
         --option-color: var(--mv-select-option-color, var(--color));
-        --option-background: var(--mv-select-option-background, transparent);
+        --option-background: var(--mv-select-option-background, #FFFFFF);
         --option-hover-background: var(--mv-select-option-hover-background, #1D9BC9);
         --option-hover-color: var(--mv-select-option-hover-color, #FFFFFF);
         --option-item-padding: var(--mv-select-option-max-height, 10px);
       }
 
-      .mv-select-container {
-        max-width: var(--max-width);
+      .mv-select {
+        width: var(--width);        
+      }
+
+      .mv-select-contents {
+        position: absolute;
+        width: var(--width);
+        height: var(--max-height);
+      }
+
+      .mv-select-contents.always-open {
+        position: relative;
+        height: unset;
       }
 
       .mv-select-input-group {
@@ -115,6 +126,7 @@ export class MvSelect extends LitElement {
         border: var(--border);
         border-radius: var(--border-radius);
         max-height: var(--option-max-height);
+        background: var(--option-background);
         overflow: auto;
         display: block;
         left: 0;
@@ -123,7 +135,12 @@ export class MvSelect extends LitElement {
         top: 2px;
         width:auto;
         list-style:none;
-        z-index: 100;
+        z-index: 0;
+      }
+
+      .mv-select-options.open {
+        box-shadow: 3px 3px 10px 0px rgba(58,58,58,0.6);
+        z-index: 10;
       }
 
       .mv-select-item {
@@ -146,56 +163,66 @@ export class MvSelect extends LitElement {
     super();
     this.value = { label: "" };
     this.options = [];
-    this.search = false;
+    this.searchable = false;
     this.open = false;
     this["always-open"] = false;
     this["multi-select"] = false;
   }
 
   render() {
-    const inputClass = `mv-select-input ${this.search ? "search" : "static"}`;
+    const alwaysOpen = this["always-open"];
+    const inputClass = `mv-select-input ${this.searchable
+      ? "searchable"
+      : "static"}`;
     const buttonClass = `mv-select-dropdown-button ${this.open
       ? "open"
       : "close"}`;
+    const optionClass = `mv-select-options${this.open && !alwaysOpen
+      ? " open"
+      : ""}`;
     return html`
-    <div class="mv-select-container">
-      <div class="mv-select-input-group">
-        ${this.search
-          ? html`
-            <input
-              class="${inputClass}"
-              .value="${this.value.label}"
-            ></input>
-          `
-          : html`
-            <div class=${inputClass}>
-              <slot name="custom-value">
-                ${this.value.label}
-              </slot>
-            </div>
-          `}        
-        ${!this["always-open"]
-          ? html`
-            <slot name="custom-button" class="mv-select-button">
-              <button class="${buttonClass}">&#9660;</button>
-            </slot>
-          `
-          : html``}
-      </div>
-      ${this.open || this["always-open"]
-        ? html`
-          <ul class="mv-select-options">
-            ${this.options.map(
-              item => html`
-                <li class="mv-select-item" @click="${this.selectItem(item)}">
-                  <slot name="custom-option">${item.label}</slot>
-                </li>
+      <div class="mv-select">
+        <div class="mv-select-contents${alwaysOpen ? " always-open" : ""}">
+          <div class="mv-select-input-group">
+            ${this.searchable && this.open
+              ? html`
+                <input
+                  class="${inputClass}"
+                  .value="${this.value.label}"
+                ></input>
               `
-            )}
-          </ul>
-        `
-        : html``}
-      </div>
+              : html`
+                <div class=${inputClass}>
+                  <slot name="custom-value">
+                    ${this.value.label}
+                  </slot>
+                </div>
+              `}        
+            ${!alwaysOpen
+              ? html`
+                <slot name="custom-button" class="mv-select-button">
+                  <button class="${buttonClass}">&#9660;</button>
+                </slot>
+              `
+              : html``}
+          </div>
+          ${this.open || alwaysOpen
+            ? html`
+              <ul class="${optionClass}">
+                ${this.options.map(
+                  item => html`
+                    <li class="mv-select-item" @click="${this.selectItem(
+                      item
+                    )}">
+                      <slot name="custom-option">${item.label}</slot>
+                    </li>
+                  `
+                )}
+              </ul>
+            `
+            : html``}
+          </div>
+        </div>
     `;
   }
 
@@ -219,6 +246,8 @@ export class MvSelect extends LitElement {
     const clickedAway = !(path || []).some(node => node === this);
     if (!clickedAway) {
       this.open = !this.open;
+    } else {
+      this.open = false;
     }
   };
 
@@ -233,10 +262,7 @@ export class MvSelect extends LitElement {
     const self = this;
     return () => {
       self.dispatchEvent(
-        new CustomEvent("select-option", {
-          detail: { option },
-          bubbles: true
-        })
+        new CustomEvent("select-option", { detail: { option } })
       );
     };
   };
