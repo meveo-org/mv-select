@@ -7,6 +7,41 @@ import "mv-toast";
 
 import "./mv-select.js";
 
+const ALL_OPTIONS = [
+  {
+    label: html`<mv-fa icon="smile" regular></mv-fa> Option 1`,
+    value: "option1"
+  },
+  {
+    label: "Option 2",
+    value: "option2"
+  },
+  {
+    label: "Option 3",
+    value: "option3"
+  },
+  {
+    label: "Option 12",
+    value: "option12"
+  },
+  {
+    label: "Option 23",
+    value: "option23"
+  },
+  {
+    label: "Option 13",
+    value: "option13"
+  },
+  {
+    label: "Option 22",
+    value: "option22"
+  },
+  {
+    label: "Option 33",
+    value: "option33"
+  }
+];
+
 export class MvSelectDemo extends LitElement {
   static get properties() {
     return {
@@ -35,11 +70,8 @@ export class MvSelectDemo extends LitElement {
       }
 
       mv-button {
-        --mv-button-padding: 10px 15px;
-      }
-
-      mv-select {
-        height: 34px;
+        --mv-button-padding: 8px 12px;
+        --mv-button-margin: 0 5px;
       }
 
       .contents {
@@ -54,50 +86,24 @@ export class MvSelectDemo extends LitElement {
         justify-content: flex-start;
         align-items: center;
       }
+
+      .message {
+        display: block;
+        font-size: 1.2rem;
+        font-weight: bold;     
+        text-transform: uppercase;
+      }
     `;
   }
 
   constructor() {
     super();
     this.value = {};
-    this.options = [
-      {
-        label: html`<mv-fa icon="smile" regular></mv-fa> Option 1`,
-        value: "option1"
-      },
-      {
-        label: "Option 2",
-        value: "option2"
-      },
-      {
-        label: "Option 3",
-        value: "option3"
-      },
-      {
-        label: "Option 4",
-        value: "option4"
-      },
-      {
-        label: "Option 5",
-        value: "option5"
-      },
-      {
-        label: "Option 6",
-        value: "option6"
-      },
-      {
-        label: "Option 7",
-        value: "option7"
-      },
-      {
-        label: "Option 8",
-        value: "option8"
-      },
-      {
-        label: "Option 9",
-        value: "option9"
-      }
-    ];
+    this.options = {
+      default: null,
+      searchable: null,
+      alwaysOpen: null
+    };
   }
 
   render() {
@@ -108,65 +114,81 @@ export class MvSelectDemo extends LitElement {
             <label>Default</label>
             <div class="default-select-container">
               <mv-select
-                .value="${this.value.default || {}}"
-                .options="${this.options}"
+                .value="${this.value.default}"
+                .options="${this.options.default}"
                 @select-option="${this.displayValue("default")}"
+                has-empty-option
+                no-clear-button
               ></mv-select>            
               <mv-button
                 button-style="error"
-                @button-clicked="${this.clearDefaultValue}"
+                @button-clicked="${this.clearValue("default")}"
               ><mv-fa icon="times"></mv-fa></mv-button>
             </div>
           </div>
-          <div class="message">
+          <div>
             <mv-toast type="information" .closeable="${false}">
               <h4>Default type selected value:</h4>
-              <pre>${(this.value &&
+              <div class="message">${this.value &&
                 this.value.default &&
-                this.value.default.value) ||
-                "{}"}</pre>
+                this.value.default.label}</div>
             </mv-toast>
           </div>
           
           <div class="input-group">
             <label>Searchable</label>
             <mv-select
-              .options="${this.options}"
+              .value="${this.value.searchable}"
+              .options="${this.options.searchable}"
               @select-option="${this.displayValue("searchable")}"
+              @on-search="${this.searchValue("searchable")}"
+              @on-clear="${this.clearValue("searchable")}"
               searchable
             ></mv-select>
           </div>
-          <div class="message">
+          <div>
             <mv-toast type="information" .closeable="${false}">
               <h4>Searchable type selected value:</h4>
-              <pre>${(this.value &&
+              <div class="message">${this.value &&
                 this.value.searchable &&
-                this.value.searchable.value) ||
-                "{}"}</pre>
+                this.value.searchable.label}</div>
             </mv-toast>
           </div>
 
           <div class="input-group">
             <label>Always open</label>
             <mv-select
-              .options="${this.options}"
+              .value="${this.value.alwaysOpen}"
+              .options="${this.options.alwaysOpen}"
               @select-option="${this.displayValue("alwaysOpen")}"
+              @on-search="${this.searchValue("alwaysOpen")}"
+              @on-clear="${this.clearValue("alwaysOpen")}"
               always-open
+              searchable
             ></mv-select>
           </div>
-          <div class="message">
+          <div>
             <mv-toast type="information" .closeable="${false}">
               <h4>Always open type selected value:</h4>
-              <pre>${(this.value &&
+              <div class="message">${this.value &&
                 this.value.alwaysOpen &&
-                this.value.alwaysOpen.value) ||
-                "{}"}</pre>
+                this.value.alwaysOpen.label}</div>
             </mv-toast>
           </div>
         </div>
       </mv-container>
     `;
   }
+
+  connectedCallback() {
+    this.options = Object.keys(this.options).reduce(
+      (options, key) => ({ ...options, [key]: this.resetOptions() }),
+      {}
+    );
+    super.connectedCallback();
+  }
+
+  resetOptions = () => [...ALL_OPTIONS.map(option => ({ ...option }))];
 
   displayValue = name => {
     return event => {
@@ -175,10 +197,41 @@ export class MvSelectDemo extends LitElement {
     };
   };
 
+  searchValue = name => {
+    return event => {
+      const { detail: { value } } = event;
+      this.options = {
+        ...this.options,
+        [name]: ALL_OPTIONS.filter(option => {
+          const searchableLabel =
+            option.label.type === "html"
+              ? new DOMParser()
+                  .parseFromString(option.label.strings[0], "text/html")
+                  .body.textContent.trim()
+              : option.label;
+          if (!!value) {
+            return (
+              searchableLabel.includes(value) || option.value.includes(value)
+            );
+          }
+          return option;
+        })
+      };
+    };
+  };
+
   // this is a sample function for changing the value of the component
   // from the parent component.
-  clearDefaultValue = () => {
-    this.value = { ...this.value, default: null };
+  clearValue = name => {
+    const self = this;
+    return ({ detail }) => {
+      const { originalEvent } = detail || {};
+      if (originalEvent) {
+        originalEvent.stopPropagation();
+      }
+      self.value = { ...self.value, [name]: null };
+      self.options = { ...self.options, [name]: this.resetOptions() };
+    };
   };
 }
 
