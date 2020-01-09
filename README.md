@@ -39,7 +39,7 @@ You can also check this [demo](https://manaty.net/mv-select/)
 
 The options has the following properties:
 
-```json
+```javascript
 {
   label, // string or html template to render as the label
   value // object value of the option
