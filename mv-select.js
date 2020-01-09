@@ -368,7 +368,6 @@ export class MvSelect extends LitElement {
 
   setValue = event => {
     const { detail: { option } } = event;
-    console.log("set value", option);
     this.value = option;
     this.open = false;
     if (this.searchable) {
