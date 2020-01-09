@@ -72,6 +72,7 @@ export class MvSelectDemo extends LitElement {
       mv-button {
         --mv-button-padding: 8px 12px;
         --mv-button-margin: 0 5px;
+        --mv-button-min-width: 50px;
       }
 
       .contents {

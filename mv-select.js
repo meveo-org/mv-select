@@ -1,5 +1,6 @@
 import { LitElement, html, css } from "lit-element";
 import { debounce } from "./lib/debounce.js";
+import "mv-click-away";
 
 export class MvSelect extends LitElement {
   static get properties() {
@@ -236,77 +237,79 @@ export class MvSelect extends LitElement {
     const label = this.value ? this.value.label : "";
     const value = this.showInput ? "" : label;
     return html`
-      <div class="mv-select">
-        <div class="mv-select-contents${alwaysOpen ? " always-open" : ""}">
-          <div
-            class="mv-select-input-group"
-            @click="${this.toggleDropdown}"
-            @keyup="${this.handleKeyPress}"            
-          >
-            ${this.showInput
-              ? html`
-                <input
-                  class="${inputClass}"
-                  .value="${value}"
-                  placeholder="${this.placeholder}"
-                ></input>
-              `
-              : html`
-                <div class=${inputClass}>
-                  <slot name="custom-value">
-                    ${label}
-                  </slot>
-                </div>
-              `}
-            ${!this["no-clear-button"]
-              ? html`
-                <slot name="custom-clear-button" class="mv-select-button">
-                  <button
-                    class="${clearButtonClass}"
-                    @click="${this.clearSearch}"
-                  >&times;</button>
-                </slot>
-              `
-              : html``}            
-            ${!alwaysOpen
-              ? html`
-                <slot name="custom-dropdown-button" class="mv-select-button">
-                  <button class="${dropdownButtonClass}">&#9660;</button>
-                </slot>
-              `
-              : html``}              
-          </div>
-          ${this.open || alwaysOpen
-            ? html`
-              ${options.length > 0
+      <mv-click-away @clicked-away="${this.handleClickAway}">
+        <div class="mv-select">
+          <div class="mv-select-contents${alwaysOpen ? " always-open" : ""}">
+            <div
+              class="mv-select-input-group"
+              @click="${this.toggleDropdown}"
+              @keyup="${this.handleKeyPress}"            
+            >
+              ${this.showInput
                 ? html`
-                  <ul class="${optionsClass}">
-                    ${options.map(item => {
-                      const selectedClass =
-                        item === this.value ? " selected" : "";
-                      const itemClass = `mv-select-item${selectedClass}`;
-                      return html`
-                        <li
-                          class="${itemClass}"
-                          @click="${this.selectItem(item)}"
-                        >
-                          <slot name="custom-option">${item.label}</slot>
-                        </li>
-                      `;
-                    })}
-                  </ul>
+                  <input
+                    class="${inputClass}"
+                    .value="${value}"
+                    placeholder="${this.placeholder}"
+                  ></input>
                 `
                 : html`
-                  <ul class="${optionsClass}">
-                    <li class="mv-select-item">
-                      <slot name="custom-empty-message">No available options</slot>
-                    </li>
-                  </ul>
-                `}              
-            `
-            : html``}
+                  <div class=${inputClass}>
+                    <slot name="custom-value">
+                      ${label}
+                    </slot>
+                  </div>
+                `}
+              ${!this["no-clear-button"]
+                ? html`
+                  <slot name="custom-clear-button" class="mv-select-button">
+                    <button
+                      class="${clearButtonClass}"
+                      @click="${this.clearSearch}"
+                    >&times;</button>
+                  </slot>
+                `
+                : html``}            
+              ${!alwaysOpen
+                ? html`
+                  <slot name="custom-dropdown-button" class="mv-select-button">
+                    <button class="${dropdownButtonClass}">&#9660;</button>
+                  </slot>
+                `
+                : html``}              
+            </div>
+            ${this.open || alwaysOpen
+              ? html`
+                ${options.length > 0
+                  ? html`
+                    <ul class="${optionsClass}">
+                      ${options.map(item => {
+                        const selectedClass =
+                          item === this.value ? " selected" : "";
+                        const itemClass = `mv-select-item${selectedClass}`;
+                        return html`
+                          <li
+                            class="${itemClass}"
+                            @click="${this.selectItem(item)}"
+                          >
+                            <slot name="custom-option">${item.label}</slot>
+                          </li>
+                        `;
+                      })}
+                    </ul>
+                  `
+                  : html`
+                    <ul class="${optionsClass}">
+                      <li class="mv-select-item">
+                        <slot name="custom-empty-message">No available options</slot>
+                      </li>
+                    </ul>
+                  `}              
+              `
+              : html``}
+          </div>
         </div>
-      </div>
+      </mv-click-away>
     `;
   }
 
@@ -317,7 +320,6 @@ export class MvSelect extends LitElement {
         this.value = this.emptyOption;
       }
     }
-    document.addEventListener("click", this.handleClickAway);
     this.addEventListener("select-option", this.setValue);
     super.connectedCallback();
   }
@@ -331,24 +333,17 @@ export class MvSelect extends LitElement {
     super.attributeChangedCallback(name, oldValue, newValue);
   }
 
-  detachedCallback() {
-    document.removeEventListener("click", this.handleClickAway);
-    super.detachedCallback();
-  }
-
-  handleClickAway = event => {
-    const { path } = event;
-    const clickedAway = !(path || []).some(node => node === this);
-    if (clickedAway) {
-      this.open = false;
-      this.showInput = false;
-    }
+  handleClickAway = () => {
+    this.open = false;
+    this.showInput = false;
   };
 
   handleKeyPress = debounce(originalEvent => {
     const self = this;
-    const { path: [input] } = originalEvent;
-    const { value } = input;
+    const { path, originalTarget } = originalEvent;
+    const eventPath = path || originalEvent.composedPath();
+    const [input] = eventPath;
+    const { value } = input || originalTarget;
     self.dispatchEvent(
       new CustomEvent("on-search", { detail: { value, originalEvent } })
     );
@@ -373,6 +368,7 @@ export class MvSelect extends LitElement {
 
   setValue = event => {
     const { detail: { option } } = event;
+    console.log("set value", option);
     this.value = option;
     this.open = false;
     if (this.searchable) {
