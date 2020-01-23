@@ -120,7 +120,8 @@ export class MvSelect extends LitElement {
       .mv-select-dropdown-button.close {
         transition: -webkit-transform 0.3s;
         transition: transform 0.3s;
-        transition: transform 0.3s, -webkit-transform 0.3s;        
+        transition: transform 0.3s,
+        -webkit-transform 0.3s;        
         -webkit-transform: rotate(0);
         transform: rotate(0);
       }
@@ -128,7 +129,8 @@ export class MvSelect extends LitElement {
       .mv-select-dropdown-button.open {
         transition: -webkit-transform 0.3s;
         transition: transform 0.3s;
-        transition: transform 0.3s, -webkit-transform 0.3s;        
+        transition: transform 0.3s,
+        -webkit-transform 0.3s;        
         -webkit-transform: rotate(180deg);
         transform: rotate(180deg);
       }
