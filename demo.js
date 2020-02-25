@@ -46,7 +46,9 @@ export class MvSelectDemo extends LitElement {
   static get properties() {
     return {
       value: { type: Object, attribute: false, reflect: true },
-      options: { type: Array, attribute: false, reflect: true }
+      options: { type: Array, attribute: false, reflect: true },
+      open: { type: Boolean, attribute: true },
+      theme: { type: String, attribute: true }
     };
   }
 
@@ -94,6 +96,17 @@ export class MvSelectDemo extends LitElement {
         font-weight: bold;     
         text-transform: uppercase;
       }
+      
+      mv-fa[icon="lightbulb"] {
+        font-size: 50px;
+        cursor: pointer;
+        margin: 20px;
+      }
+      
+      .theme {
+        display: flex;
+        justify-content: flex-start;
+      }
     `;
   }
 
@@ -105,14 +118,22 @@ export class MvSelectDemo extends LitElement {
       searchable: null,
       alwaysOpen: null
     };
+    this.theme = "light";
+    this.open = true;
   }
 
   render() {
+    const iconColor = `color: ${this.open ? "yellow" : ""}`;
+    const textColor = `color: ${this.open ? "" : "#FFFFFF"}`;
+    const toastTheme = this.open ? "dark" : "light";
     return html`
-      <mv-container>
+      <div class="theme">
+        <mv-fa icon="lightbulb" style="${iconColor}" @click=${this.toggleLightBulb}></mv-fa>
+      </div>
+      <mv-container .theme="${this.theme}">
         <div class="contents">
           <div class="input-group">            
-            <label>Default</label>
+            <label style="${textColor}">Default</label>
             <div class="default-select-container">
               <mv-select
                 .value="${this.value.default}"
@@ -128,7 +149,7 @@ export class MvSelectDemo extends LitElement {
             </div>
           </div>
           <div>
-            <mv-toast type="information" .closeable="${false}">
+            <mv-toast type="information" .closeable="${false}" .theme="${toastTheme}">
               <h4>Default type selected value:</h4>
               <div class="message">${this.value &&
                 this.value.default &&
@@ -137,7 +158,7 @@ export class MvSelectDemo extends LitElement {
           </div>
           
           <div class="input-group">
-            <label>Searchable</label>
+            <label style="${textColor}">Searchable</label>
             <mv-select
               .value="${this.value.searchable}"
               .options="${this.options.searchable}"
@@ -148,7 +169,7 @@ export class MvSelectDemo extends LitElement {
             ></mv-select>
           </div>
           <div>
-            <mv-toast type="information" .closeable="${false}">
+            <mv-toast type="information" .closeable="${false}" .theme="${toastTheme}">
               <h4>Searchable type selected value:</h4>
               <div class="message">${this.value &&
                 this.value.searchable &&
@@ -157,7 +178,7 @@ export class MvSelectDemo extends LitElement {
           </div>
 
           <div class="input-group">
-            <label>Always open</label>
+            <label style="${textColor}">Always open</label>
             <mv-select
               .value="${this.value.alwaysOpen}"
               .options="${this.options.alwaysOpen}"
@@ -169,7 +190,7 @@ export class MvSelectDemo extends LitElement {
             ></mv-select>
           </div>
           <div>
-            <mv-toast type="information" .closeable="${false}">
+            <mv-toast type="information" .closeable="${false}" .theme="${toastTheme}">
               <h4>Always open type selected value:</h4>
               <div class="message">${this.value &&
                 this.value.alwaysOpen &&
@@ -233,6 +254,15 @@ export class MvSelectDemo extends LitElement {
       self.value = { ...self.value, [name]: null };
       self.options = { ...self.options, [name]: this.resetOptions() };
     };
+  };
+
+  toggleLightBulb = () => {
+    this.open = !this.open;
+    if (this.open) {
+      this.theme = "light";
+    } else {
+      this.theme = "dark";
+    }
   };
 }
 
