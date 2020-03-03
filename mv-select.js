@@ -22,10 +22,10 @@ export class MvSelect extends LitElement {
 
   static get styles() {
     return css`
-			:host {
+      :host {
         user-select: none;
-				--mv-select-font-family: var(--font-family, Arial);
-				--mv-select-font-size: var(--font-size-m, 10pt);
+        --mv-select-font-family: var(--font-family, Arial);
+        --mv-select-font-size: var(--font-size-m, 10pt);
         --color: var(--mv-select-color, #777);
         --width: var(--mv-select-width, 200px);
         --input-padding: var(--mv-select-input-padding, 4px);
@@ -50,7 +50,7 @@ export class MvSelect extends LitElement {
         --option-hover-color: var(--mv-select-option-hover-color, #FFFFFF);
         --option-item-padding: var(--mv-select-option-max-height, 10px);
       }
-
+      
       .mv-select {
         width: var(--width);
         min-height: var(--full-height);
@@ -199,7 +199,7 @@ export class MvSelect extends LitElement {
         color: var(--option-hover-color);
         cursor: pointer;
       }
-		`;
+    `;
   }
 
   constructor() {
