@@ -104,9 +104,9 @@ export class MvSelectDemo extends LitElement {
         width: 120px;
         margin-left: 10px;
         border:2px solid red;
-        -moz-border-radius:8px;
-        -webkit-border-radius:8px;	
-        border-radius:8px;
+        -moz-border-radius: 8px;
+        -webkit-border-radius: 8px;	
+        border-radius: 8px;
         color: #818181;
       }
       
@@ -129,19 +129,17 @@ export class MvSelectDemo extends LitElement {
   }
 
   render() {
-    const isLightTheme = this.theme === "light";
-    const textColor = `color: ${isLightTheme ? "" : "#FFFFFF"}`;
-    const toastTheme = isLightTheme ? "dark" : "light";
+    const { theme } = this;
     return html`
       <fieldset>
         <legend>Theme</legend>
-        <label><input type="radio" name="theme" value="light" checked @change="${this.radioChange}" />Light</label>
-        <label><input type="radio" name="theme" value="dark" @change="${this.radioChange}" />Dark</label>
+        <label><input type="radio" name="theme" value="light" checked @change="${this.changeTheme}" />Light</label>
+        <label><input type="radio" name="theme" value="dark" @change="${this.changeTheme}" />Dark</label>
       </fieldset>
-      <mv-container .theme="${this.theme}">
+      <mv-container .theme="${theme}">
         <div class="contents">
           <div class="input-group">            
-            <label style="${textColor}">Default</label>
+            <label>Default</label>
             <div class="default-select-container">
               <mv-select
                 .value="${this.value.default}"
@@ -157,7 +155,7 @@ export class MvSelectDemo extends LitElement {
             </div>
           </div>
           <div>
-            <mv-toast type="information" .closeable="${false}" .theme="${toastTheme}">
+            <mv-toast type="information" .closeable="${false}" .theme="${theme}">
               <h4>Default type selected value:</h4>
               <div class="message">${this.value &&
                 this.value.default &&
@@ -166,7 +164,7 @@ export class MvSelectDemo extends LitElement {
           </div>
           
           <div class="input-group">
-            <label style="${textColor}">Searchable</label>
+            <label>Searchable</label>
             <mv-select
               .value="${this.value.searchable}"
               .options="${this.options.searchable}"
@@ -177,7 +175,7 @@ export class MvSelectDemo extends LitElement {
             ></mv-select>
           </div>
           <div>
-            <mv-toast type="information" .closeable="${false}" .theme="${toastTheme}">
+            <mv-toast type="information" .closeable="${false}" .theme="${theme}">
               <h4>Searchable type selected value:</h4>
               <div class="message">${this.value &&
                 this.value.searchable &&
@@ -186,7 +184,7 @@ export class MvSelectDemo extends LitElement {
           </div>
 
           <div class="input-group">
-            <label style="${textColor}">Always open</label>
+            <label>Always open</label>
             <mv-select
               .value="${this.value.alwaysOpen}"
               .options="${this.options.alwaysOpen}"
@@ -198,7 +196,7 @@ export class MvSelectDemo extends LitElement {
             ></mv-select>
           </div>
           <div>
-            <mv-toast type="information" .closeable="${false}" .theme="${toastTheme}">
+            <mv-toast type="information" .closeable="${false}" .theme="${theme}">
               <h4>Always open type selected value:</h4>
               <div class="message">${this.value &&
                 this.value.alwaysOpen &&
@@ -264,13 +262,9 @@ export class MvSelectDemo extends LitElement {
     };
   };
 
-  radioChange = originalEvent => {
+  changeTheme = originalEvent => {
     const { target: { value } } = originalEvent;
-    if (value === "light") {
-      this.theme = "light";
-    } else {
-      this.theme = "dark";
-    }
+    this.theme = value;
   };
 }
 
