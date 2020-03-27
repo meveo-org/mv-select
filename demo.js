@@ -56,6 +56,9 @@ export class MvSelectDemo extends LitElement {
       :host {
         font-family: var(--font-family, Arial);
         font-size: var(--font-size-m, 10pt);
+        --mv-select-font-size: 16px;
+        --mv-select-input-padding: 6px;
+        --mv-select-border: 1px solid #4e686d;
       }
 
       mv-container label {
