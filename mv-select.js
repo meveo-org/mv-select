@@ -68,6 +68,7 @@ export class MvSelect extends LitElement {
       }
 
       .mv-select {
+        position: relative;
         width: var(--width);
         min-height: var(--full-height);
       }
