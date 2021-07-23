@@ -10,36 +10,36 @@ import "./mv-select.js";
 const ALL_OPTIONS = [
   {
     label: html`<mv-fa icon="smile" regular></mv-fa> Option 1`,
-    value: "option1"
+    value: "option1",
   },
   {
     label: "Option 2",
-    value: "option2"
+    value: "option2",
   },
   {
     label: "Option 3",
-    value: "option3"
+    value: "option3",
   },
   {
     label: "Option 12",
-    value: "option12"
+    value: "option12",
   },
   {
     label: "Option 23",
-    value: "option23"
+    value: "option23",
   },
   {
     label: "Option 13",
-    value: "option13"
+    value: "option13",
   },
   {
     label: "Option 22",
-    value: "option22"
+    value: "option22",
   },
   {
     label: "Option 33",
-    value: "option33"
-  }
+    value: "option33",
+  },
 ];
 
 export class MvSelectDemo extends LitElement {
@@ -47,7 +47,7 @@ export class MvSelectDemo extends LitElement {
     return {
       value: { type: Object, attribute: false, reflect: true },
       options: { type: Array, attribute: false, reflect: true },
-      theme: { type: String, attribute: true }
+      theme: { type: String, attribute: true },
     };
   }
 
@@ -79,6 +79,15 @@ export class MvSelectDemo extends LitElement {
         --mv-button-min-width: 50px;
       }
 
+      .input-group {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-evenly;
+        align-items: stretch;
+        align-content: stretch;
+        flex-wrap: nowrap;
+      }
+
       .contents {
         display: grid;
         grid-template-columns: 1fr 1fr;
@@ -88,31 +97,33 @@ export class MvSelectDemo extends LitElement {
 
       .default-select-container {
         display: flex;
-        justify-content: flex-start;
+        flex-flow: row nowrap;
+        justify-content: space-between;
         align-items: center;
       }
 
       .message {
         display: block;
         font-size: 1.2rem;
-        font-weight: bold;     
+        font-weight: bold;
         text-transform: uppercase;
       }
-      
-      fieldset > label, label > input {
+
+      fieldset > label,
+      label > input {
         cursor: pointer;
       }
-      
+
       fieldset {
         width: 120px;
         margin-left: 10px;
-        border:2px solid red;
+        border: 2px solid red;
         -moz-border-radius: 8px;
-        -webkit-border-radius: 8px;	
+        -webkit-border-radius: 8px;
         border-radius: 8px;
         color: #818181;
       }
-      
+
       legend {
         font-weight: 500;
         color: red;
@@ -126,7 +137,7 @@ export class MvSelectDemo extends LitElement {
     this.options = {
       default: null,
       searchable: null,
-      alwaysOpen: null
+      alwaysOpen: null,
     };
     this.theme = "light";
   }
@@ -136,41 +147,63 @@ export class MvSelectDemo extends LitElement {
     return html`
       <fieldset>
         <legend>Theme</legend>
-        <label><input type="radio" name="theme" value="light" checked @change="${this.changeTheme}" />Light</label>
-        <label><input type="radio" name="theme" value="dark" @change="${this.changeTheme}" />Dark</label>
+        <label
+          ><input
+            type="radio"
+            name="theme"
+            value="light"
+            checked
+            @change="${this.changeTheme}"
+          />Light</label
+        >
+        <label
+          ><input
+            type="radio"
+            name="theme"
+            value="dark"
+            @change="${this.changeTheme}"
+          />Dark</label
+        >
       </fieldset>
       <mv-container .theme="${theme}">
         <div class="contents">
-          <div class="input-group">            
+          <div class="input-group">
             <label>Default</label>
             <div class="default-select-container">
               <mv-select
                 .value="${this.value.default}"
                 .options="${this.options.default}"
+                .theme="${theme}"
                 @select-option="${this.displayValue("default")}"
                 has-empty-option
                 no-clear-button
-              ></mv-select>            
+              ></mv-select>
               <mv-button
                 button-style="error"
                 @button-clicked="${this.clearValue("default")}"
-              ><mv-fa icon="times"></mv-fa></mv-button>
+                ><mv-fa icon="times"></mv-fa
+              ></mv-button>
             </div>
           </div>
           <div>
-            <mv-toast type="information" .closeable="${false}" .theme="${theme}">
+            <mv-toast
+              type="information"
+              .closeable="${false}"
+              .theme="${theme}"
+            >
               <h4>Default type selected value:</h4>
-              <div class="message">${this.value &&
-                this.value.default &&
-                this.value.default.label}</div>
+              <div class="message">
+                ${this.value && this.value.default && this.value.default.label}
+              </div>
             </mv-toast>
           </div>
-          
+
           <div class="input-group">
             <label>Searchable</label>
             <mv-select
               .value="${this.value.searchable}"
               .options="${this.options.searchable}"
+              .theme="${theme}"
               @select-option="${this.displayValue("searchable")}"
               @on-search="${this.searchValue("searchable")}"
               @on-clear="${this.clearValue("searchable")}"
@@ -178,11 +211,17 @@ export class MvSelectDemo extends LitElement {
             ></mv-select>
           </div>
           <div>
-            <mv-toast type="information" .closeable="${false}" .theme="${theme}">
+            <mv-toast
+              type="information"
+              .closeable="${false}"
+              .theme="${theme}"
+            >
               <h4>Searchable type selected value:</h4>
-              <div class="message">${this.value &&
+              <div class="message">
+                ${this.value &&
                 this.value.searchable &&
-                this.value.searchable.label}</div>
+                this.value.searchable.label}
+              </div>
             </mv-toast>
           </div>
 
@@ -191,6 +230,7 @@ export class MvSelectDemo extends LitElement {
             <mv-select
               .value="${this.value.alwaysOpen}"
               .options="${this.options.alwaysOpen}"
+              .theme="${theme}"
               @select-option="${this.displayValue("alwaysOpen")}"
               @on-search="${this.searchValue("alwaysOpen")}"
               @on-clear="${this.clearValue("alwaysOpen")}"
@@ -199,11 +239,17 @@ export class MvSelectDemo extends LitElement {
             ></mv-select>
           </div>
           <div>
-            <mv-toast type="information" .closeable="${false}" .theme="${theme}">
+            <mv-toast
+              type="information"
+              .closeable="${false}"
+              .theme="${theme}"
+            >
               <h4>Always open type selected value:</h4>
-              <div class="message">${this.value &&
+              <div class="message">
+                ${this.value &&
                 this.value.alwaysOpen &&
-                this.value.alwaysOpen.label}</div>
+                this.value.alwaysOpen.label}
+              </div>
             </mv-toast>
           </div>
         </div>
@@ -219,21 +265,25 @@ export class MvSelectDemo extends LitElement {
     super.connectedCallback();
   }
 
-  resetOptions = () => [...ALL_OPTIONS.map(option => ({ ...option }))];
+  resetOptions = () => [...ALL_OPTIONS.map((option) => ({ ...option }))];
 
-  displayValue = name => {
-    return event => {
-      const { detail: { option } } = event;
+  displayValue = (name) => {
+    return (event) => {
+      const {
+        detail: { option },
+      } = event;
       this.value = { ...this.value, [name]: option };
     };
   };
 
-  searchValue = name => {
-    return event => {
-      const { detail: { value } } = event;
+  searchValue = (name) => {
+    return (event) => {
+      const {
+        detail: { value },
+      } = event;
       this.options = {
         ...this.options,
-        [name]: ALL_OPTIONS.filter(option => {
+        [name]: ALL_OPTIONS.filter((option) => {
           const searchableLabel =
             option.label.type === "html"
               ? new DOMParser()
@@ -246,14 +296,14 @@ export class MvSelectDemo extends LitElement {
             );
           }
           return option;
-        })
+        }),
       };
     };
   };
 
   // this is a sample function for changing the value of the component
   // from the parent component.
-  clearValue = name => {
+  clearValue = (name) => {
     const self = this;
     return ({ detail }) => {
       const { originalEvent } = detail || {};
@@ -265,8 +315,10 @@ export class MvSelectDemo extends LitElement {
     };
   };
 
-  changeTheme = originalEvent => {
-    const { target: { value } } = originalEvent;
+  changeTheme = (originalEvent) => {
+    const {
+      target: { value },
+    } = originalEvent;
     this.theme = value;
   };
 }

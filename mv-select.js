@@ -6,7 +6,7 @@ export class MvSelect extends LitElement {
   static get properties() {
     return {
       theme: { type: String },
-      value: { type: Object, attribute: true, reflect: true },
+      value: { type: Object, attribute: false, reflect: true },
       options: { type: Array, attribute: false, reflect: true },
       open: { type: Boolean, attribute: true, reflect: true },
       placeholder: { type: String, attribute: true },
@@ -24,43 +24,7 @@ export class MvSelect extends LitElement {
   static get styles() {
     return css`
       :host {
-        user-select: none;
-        --mv-select-font-family: var(--font-family, Arial);
-        --mv-select-font-size: var(--font-size-m, 16px);
-        --mv-dropdown-content-max-height: var(
-          --mv-select-option-max-height,
-          250px
-        );
-        --color: var(--mv-select-color, #777);
-        --width: var(--mv-select-width, 200px);
-        --input-padding: var(--mv-select-input-padding, 4px);
-        --outside-padding: calc(var(--input-padding) * 2);
-        --max-height: calc(var(--mv-select-font-size) + var(--outside-padding));
-        --input-height: var(--max-height);
-        --total-height: calc(var(--max-height) + var(--outside-padding));
-        --full-height: calc(var(--total-height) + 2px);
-        --border: var(--mv-select-border, 1px solid #4e686d);
-        --border-radius: var(--mv-select-border-radius, 5px);
-        --clear-icon-size: var(
-          --mv-select-clear-icon-size,
-          var(--mv-select-font-size)
-        );
-        --dropdown-icon-button-margin: var(--input-padding);
-        --dropdown-icon-size: var(
-          --mv-select-dropdown-icon-size,
-          calc(var(--mv-select-font-size) * 0.75)
-        );
-        --dropdown-icon-button-size: calc(
-          var(--dropdown-icon-size) + var(--dropdown-icon-button-margin)
-        );
-        --dropdown-icon-total-width: calc(
-          var(--dropdown-icon-button-size) + var(--input-padding)
-        );
-        --button-section-width: calc(var(--dropdown-icon-total-width) * 2);
-        --dropdown-icon-button-color: var(
-          --mv-select-dropdown-icon-button-color,
-          var(--color)
-        );
+        --mv-dropdown-content-max-height: 150px;
         --option-color: var(--mv-select-option-color, var(--color));
         --option-background: var(--mv-select-option-background, #ffffff);
         --option-hover-background: var(
@@ -71,146 +35,119 @@ export class MvSelect extends LitElement {
         --option-item-padding: var(--mv-select-option-max-height, 10px);
       }
 
-      .mv-select {
-        position: relative;
-        width: var(--width);
-        min-height: var(--full-height);
+      ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
       }
 
-      .mv-select-contents {
-        display: block;
-        position: absolute;
-        width: var(--width);
-        height: var(--full-height);
+      ul > li {
+        padding: var(--option-item-padding);
       }
 
-      .mv-select-contents.always-open {
-        position: relative;
-        height: unset;
+      ul > li:hover {
+        color: var(--option-hover-color);
+        background-color: var(--option-hover-background);
+        cursor: pointer;
       }
 
       .mv-select-input-group {
-        position: relative;
+        display: block;
+        border: 1px solid black;
+        padding: 2px;
+        border-radius: 5px;
+        width: 100%;
+      }
+
+      .mv-select {
         display: grid;
+        grid-auto-flow: row;
+        grid-row-gap: 0.25rem;
+      }
+
+      .mv-select > .trigger {
+      }
+
+      .mv-select > .content {
+        display: block;
+        border: 1px solid black;
+        padding: 2px;
+        border-radius: 5px;
+        width: 100%;
+        position: relative;
+        overflow: auto;
+        max-height: var(--mv-dropdown-content-max-height);
+      }
+
+      .mv-select-input-group {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        justify-content: space-between;
         align-items: center;
-        justify-items: start;
-        border: var(--border);
-        border-radius: var(--border-radius);
-        min-height: var(--max-height);
-        max-height: var(--max-height);
-        padding: var(--input-padding);
       }
 
       .mv-select-input {
-        font-family: var(--mv-select-font-family);
-        font-size: var(--mv-select-font-size);
-        color: var(--color);
-        border: 0;
-        outline: none;
-        min-height: var(--input-height);
-        max-height: var(--input-height);
-        line-height: var(--input-height);
-        width: calc(100% - var(--button-section-width));
+        width: 100%;
       }
 
-      .mv-select-input.no-clear,
-      .mv-select-input.no-dropdown {
-        width: calc(100% - var(--dropdown-icon-button-size));
-      }
-
-      .mv-select-button > * {
-        border: 0;
-        padding: 0;
-        position: absolute;
-        height: 100%;
-        cursor: pointer;
-      }
-
-      .mv-select-dropdown-button {
-        top: 0;
-        right: 0;
-        font-size: var(--dropdown-icon-size);
-      }
-
-      .mv-select-clear-button,
-      .mv-select-dropdown-button {
-        background: transparent;
-        outline: none;
-        margin: auto var(--dropdown-icon-button-margin);
-        width: var(--dropdown-icon-button-size);
-        color: var(--dropdown-icon-button-color);
-      }
-
-      .mv-select-dropdown-button.close {
-        transition: -webkit-transform 0.3s;
-        transition: transform 0.3s;
-        transition: transform 0.3s, -webkit-transform 0.3s;
-        -webkit-transform: rotate(0);
-        transform: rotate(0);
-      }
-
-      .mv-select-dropdown-button.open {
-        transition: -webkit-transform 0.3s;
-        transition: transform 0.3s;
-        transition: transform 0.3s, -webkit-transform 0.3s;
-        -webkit-transform: rotate(180deg);
-        transform: rotate(180deg);
-      }
-
-      .mv-select-clear-button {
-        top: 0;
-        right: var(--dropdown-icon-total-width);
-        font-size: var(--clear-icon-size);
-      }
-
-      .mv-select-clear-button.no-dropdown {
-        top: 0;
-        right: 0;
-      }
-
-      .mv-select-input.static {
-        user-select: none;
-        background: transparent;
-        padding: auto;
-      }
-
-      .mv-select-input.static:hover {
-        cursor: pointer;
-      }
-
-      .mv-select-input.searchable:hover {
-        cursor: text;
-      }
-
-      .mv-select-options {
+      .scrollbar {
+        width: 100%;
+        float: left;
+        overflow-y: auto;
         margin: 0;
-        left: 0;
-        padding: 5px 0;
-        top: 2px;
-        width: auto;
-        list-style: none;
-        z-index: 0;
+        /* fallback for firefox */
+        scrollbar-color: #5a6473 #788394;
+        scrollbar-width: thin;
+        margin: var(--content-margin);
       }
 
-      .mv-select-options.open {
-        box-shadow: 3px 3px 10px 0px rgba(58, 58, 58, 0.6);
-        z-index: 10;
+      .scrollbar:focus {
+        outline: transparent auto 0;
       }
 
-      .mv-select-item {
-        font-family: var(--mv-select-font-family);
-        font-size: var(--mv-select-font-size);
-        color: var(--color);
-        padding: var(--option-item-padding);
-        display: block;
+      .scrollbar::-webkit-scrollbar-track {
+        box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+        border-radius: 10px;
+        background-color: #788394;
       }
 
-      .mv-select-item.selected,
-      .mv-select-item.highlight,
-      .mv-select-item:hover {
-        background: var(--option-hover-background);
-        color: var(--option-hover-color);
-        cursor: pointer;
+      .scrollbar::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+        background-color: #788394;
+        border-radius: 10px;
+      }
+
+      .scrollbar::-webkit-scrollbar-thumb {
+        border-radius: 10px;
+        box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+        background-color: #5a6473;
+      }
+
+      .scrollbar.light {
+        // fallback for firefox
+        scrollbar-color: #1d9bc9 #eaebf0 !important;
+      }
+
+      .scrollbar.light::-webkit-scrollbar-track {
+        box-shadow: inset 0 0 5px 0 rgba(29, 155, 201, 0.3);
+        background-color: #eaebf0 !important;
+      }
+
+      .scrollbar.light::-webkit-scrollbar {
+        background-color: #1d9bc9;
+      }
+
+      .scrollbar.light::-webkit-scrollbar-thumb {
+        box-shadow: inset 0 0 5px 0 rgba(29, 155, 201, 0.3);
+        background-color: #008fc3;
+      }
+
+      .hidden {
+        display: none;
+        visibility: hidden;
+        opacity: 0;
       }
     `;
   }
@@ -234,114 +171,123 @@ export class MvSelect extends LitElement {
     this.multiSelect = false;
   }
 
-  render() {
-    const alwaysOpen = this.alwaysOpen;
-    const options = this.hasEmptyOption
-      ? [this.emptyOption, ...this.options]
-      : this.options;
+  renderInput = () => {
     const clearClass = this.noClearButton ? " no-clear" : "";
-    const dropdownClass = alwaysOpen ? " no-dropdown" : "";
+    const dropdownClass = this.alwaysOpen ? " no-dropdown" : "";
     const searchableClass = this.searchable ? "searchable" : "static";
     const inputClass = `mv-select-input ${searchableClass}${dropdownClass}${clearClass}`;
-    const clearButtonClass = `mv-select-clear-button${dropdownClass}`;
-    const dropdownButtonClass = `mv-select-dropdown-button ${
-      this.open ? "open" : "close"
-    }`;
-    const optionsClass = `mv-select-options${
-      this.open && !alwaysOpen ? " open" : ""
-    }`;
     const label = this.value ? this.value.label : "";
     const value = this.showInput ? "" : label;
 
+    return this.showInput
+      ? html`
+          <input
+            class="${inputClass}"
+            .value="${value}"
+            placeholder="${this.placeholder}"
+          ></input>
+        `
+      : html`
+          <slot name="custom-value">
+            <div class=${inputClass}>${label}</div>
+          </slot>
+        `;
+  };
+
+  renderClearButton = () => {
+    const dropdownClass = this.alwaysOpen ? " no-dropdown" : "";
+    const clearButtonClass = `mv-select-clear-button${dropdownClass}`;
+
+    return !this.noClearButton
+      ? html`
+          <slot name="custom-clear-button" class="mv-select-button">
+            <button class="${clearButtonClass}" @click="${this.clearSearch}">
+              &times;
+            </button>
+          </slot>
+        `
+      : html``;
+  };
+
+  renderDropArrow = () => {
+    const open = this.open ? "open" : "close";
+    const dropArrowClass = `mv-select-dropdown-button ${open}`;
+
+    return !this.alwaysOpen
+      ? html`
+          <slot name="custom-dropdown-button" class="mv-select-button">
+            <button class="${dropArrowClass}">&#9660;</button>
+          </slot>
+        `
+      : html``;
+  };
+
+  renderInputGroup = () => {
     return html`
-      <mv-dropdown
-        container
-        .justify="${this.justify}"
-        .position="${this.position}"
-        .theme="${this.theme}"
+      <div
+        class="mv-select-input-group"
+        @click="${this.toggleDropdown}"
+        @keyup="${this.handleKeyPress}"
       >
-        <mv-dropdown trigger>
-          <div
-            class="mv-select-input-group"
-            @click="${this.toggleDropdown}"
-            @keyup="${this.handleKeyPress}"
-          >
-            ${this.showInput
-              ? html`
-                  <input
-                    class="${inputClass}"
-                    .value="${value}"
-                    placeholder="${this.placeholder}"
-                  ></input>
-                `
-              : html`
-                  <slot name="custom-value">
-                    <div class=${inputClass}>${label}</div>
-                  </slot>
-                `}
-            ${!this.noClearButton
-              ? html`
-                  <slot name="custom-clear-button" class="mv-select-button">
-                    <button
-                      class="${clearButtonClass}"
-                      @click="${this.clearSearch}"
-                    >
-                      &times;
-                    </button>
-                  </slot>
-                `
-              : html``}
-            ${!alwaysOpen
-              ? html`
-                  <slot name="custom-dropdown-button" class="mv-select-button">
-                    <button class="${dropdownButtonClass}">&#9660;</button>
-                  </slot>
-                `
-              : html``}
-          </div>
-        </mv-dropdown>
-        <mv-dropdown
-          content
-          .theme="${this.theme}"
-          ?hidden="${!(this.open || alwaysOpen)}"
-        >
-          ${options.length > 0
-            ? html`
-                <ul class="${optionsClass}">
-                  ${options.map((item) => {
-                    const selectedClass =
-                      item === this.value ? " selected" : "";
-                    const itemClass = `mv-select-item${selectedClass}`;
-                    return html`
-                      <li
-                        class="${itemClass}"
-                        @click="${this.selectItem(item)}"
-                      >
-                        <slot name="custom-option">${item.label}</slot>
-                      </li>
-                    `;
-                  })}
-                </ul>
-              `
-            : html`
-                <ul class="${optionsClass}">
-                  <li class="mv-select-item">
-                    <slot name="custom-empty-message"
-                      >No available options</slot
-                    >
-                  </li>
-                </ul>
-              `}
-        </mv-dropdown>
-      </mv-dropdown>
-      <!-- <mv-click-away @clicked-away="${this.handleClickAway}">
-        <div class="mv-select">
-          <div class="mv-select-contents${alwaysOpen ? " always-open" : ""}">
-            ${this.open || alwaysOpen ? html`` : html``}
-          </div>
-        </div>
-      </mv-click-away> -->
+        ${this.renderInput()}${this.renderClearButton()}${this.renderDropArrow()}
+      </div>
     `;
+  };
+
+  renderItem = (item) => {
+    const selectedClass = item === this.value ? " selected" : "";
+    const itemClass = `mv-select-item${selectedClass}`;
+    return html`
+      <li class="${itemClass}" @click="${this.selectItem(item)}">
+        <slot name="custom-option">${item.label}</slot>
+      </li>
+    `;
+  };
+
+  renderOptions = () => {
+    const options = this.hasEmptyOption
+      ? [this.emptyOption, ...this.options]
+      : this.options;
+    const optionsClass = `mv-select-options${
+      this.open && !this.alwaysOpen ? " open" : ""
+    }`;
+
+    return options.length > 0
+      ? html`
+          <ul class="${optionsClass}">
+            ${options.map(this.renderItem)}
+          </ul>
+        `
+      : html`
+          <ul class="${optionsClass}">
+            <li class="mv-select-item">
+              <slot name="custom-empty-message">No available options</slot>
+            </li>
+          </ul>
+        `;
+  };
+
+  render() {
+    return this.alwaysOpen
+      ? html`
+          <div class="mv-select">
+            <div class="trigger">${this.renderInputGroup()}</div>
+            <div class="content ${this.theme} scrollbar">${this.renderOptions()}</div>
+          </div>
+        `
+      : html`
+          <mv-dropdown
+            container
+            .justify="${this.justify}"
+            .position="${this.position}"
+            .theme="${this.theme}"
+          >
+            <mv-dropdown trigger>${this.renderInputGroup()}</mv-dropdown>
+            <mv-dropdown content .theme="${this.theme}">
+              ${this.renderOptions()}
+            </mv-dropdown>
+          </mv-dropdown>
+        `;
   }
 
   connectedCallback() {
