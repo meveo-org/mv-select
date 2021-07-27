@@ -96,9 +96,8 @@ export class MvSelectDemo extends LitElement {
       }
 
       .default-select-container {
-        display: flex;
-        flex-flow: row nowrap;
-        justify-content: space-between;
+        display: grid;
+        grid-template-columns: auto 50px;
         align-items: center;
       }
 
