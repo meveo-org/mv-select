@@ -17,6 +17,7 @@ export class MvSelect extends LitElement {
       // TODO - multi-select not yet implemented
       multiSelect: { type: Boolean, attribute: "multi-select" },
       showInput: { type: Boolean, attribute: false, reflect: true },
+      theme: { type: String },
     };
   }
 
@@ -294,6 +295,7 @@ export class MvSelect extends LitElement {
     this.hasEmptyOption = false;
     this.noClearButton = false;
     this.multiSelect = false;
+    this.theme="light";
   }
 
   render() {
