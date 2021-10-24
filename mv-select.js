@@ -92,6 +92,7 @@ export class MvSelect extends LitElement {
         min-height: var(--max-height);
         max-height: var(--max-height);
         padding: var(--input-padding);
+        width: var(--width)
       }
 
       .mv-select-input {
