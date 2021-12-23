@@ -1,6 +1,6 @@
 import { LitElement, html, css } from "lit-element";
 import { debounce } from "./lib/debounce.js";
-import "mv-click-away";
+import "@meveo-org/mv-click-away";
 
 export class MvSelect extends LitElement {
   static get properties() {
