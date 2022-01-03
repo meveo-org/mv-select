@@ -1,4 +1,4 @@
-import { LitElement, html, css } from "lit-element";
+import { LitElement, html, css } from "lit";
 import { debounce } from "./lib/debounce.js";
 import "@meveo-org/mv-click-away";
 

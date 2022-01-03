@@ -20,6 +20,7 @@
   },
   "homepage": "https://github.com/meveo-org/mv-select#readme",
   "dependencies": {
+    "lit": "^2.0.2",
     "@meveo-org/mv-click-away": "^1.0.0"
   },
   "devDependencies": {
