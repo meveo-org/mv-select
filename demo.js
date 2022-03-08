@@ -1,9 +1,9 @@
-import { LitElement, html, css } from "lit-element";
-import "mv-button";
-import "mv-container";
-import "mv-linear-icons";
-import "mv-font-awesome";
-import "mv-toast";
+import { LitElement, html, css } from "lit";
+import "@meveo-org/mv-button";
+import "@meveo-org/mv-container";
+import "@meveo-org/mv-linear-icons";
+import "@meveo-org/mv-font-awesome";
+import "@meveo-org/mv-toast";
 
 import "./mv-select.js";
 
