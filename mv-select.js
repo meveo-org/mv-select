@@ -68,6 +68,7 @@ export class MvSelect extends LitElement {
         );
         --option-hover-color: var(--mv-select-option-hover-color, #ffffff);
         --option-item-padding: var(--mv-select-option-max-height, 10px);
+        --mv-select-selected-font-size: var(--mv-select-selected-option-font-size, 13px);
       }
 
       .no-transparency {
@@ -270,7 +271,7 @@ export class MvSelect extends LitElement {
       }
 
       .mv-select-input.lightV2 {
-        --mv-select-font-size: 13px;
+        --mv-select-font-size: var(--mv-select-selected-font-size);
       }
 
       .mv-select-input.light,
