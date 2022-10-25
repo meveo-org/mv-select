@@ -15,7 +15,7 @@ export class MvSelect extends LitElement {
       emptyLabel: { type: String, attribute: "empty-label" },
       alwaysOpen: { type: Boolean, attribute: "always-open" },
       // TODO - multi-select not yet implemented
-      multiSelect: { type: Boolean, attribute: "multi-select" },
+      multiselect: { type: Boolean, attribute: "multi-select" },
       showInput: { type: Boolean, attribute: false, reflect: true },
       theme: { type: String },
       isFilter: { type: Boolean, attribute: "is-filter" },
@@ -219,6 +219,16 @@ export class MvSelect extends LitElement {
         padding: var(--option-item-padding);
         display: block;
       }
+      .mv-select-values {
+        position: relative;
+        display: grid;
+        place-items: center start;
+        border: var(--border);
+        border-radius: var(--border-radius);
+        min-height: var(--max-height);
+        height: auto;
+        padding: var(--input-padding);
+      }
 
       .mv-select-item.selected,
       .mv-select-item.highlight,
@@ -307,8 +317,9 @@ export class MvSelect extends LitElement {
     this.alwaysOpen = false;
     this.hasEmptyOption = false;
     this.noClearButton = false;
-    this.multiSelect = false;
+    this.multiselect = true;
     this.theme="light";
+    this.allValMultiSelect= [];
   }
 
   render() {
@@ -376,6 +387,11 @@ export class MvSelect extends LitElement {
             </div>
             ${this.open || alwaysOpen
               ? html`
+                              ${this.multiselect == true
+
+? html`<div class="mv-select-values">${JSON.stringify(this.allValMultiSelect)}</div>`
+: html``}
+
                   ${options.length > 0
                     ? html`
                         <ul class="${optionsClass}">
@@ -469,6 +485,22 @@ export class MvSelect extends LitElement {
       detail: { option },
     } = event;
     this.value = option;
+
+
+    if ( this.multiselect == true) {
+
+      this.lastVal = option;
+      this.allValMultiSelect.push(this.lastVal.value)
+
+      this.value = this.allValMultiSelect
+  
+      }
+      else {this.value = option}
+
+      console.log (this.value)
+    /*
+      console.log(this.allValMultiSelect)
+  */
     this.open = false;
     if (this.searchable) {
       this.showInput = false;
@@ -477,14 +509,31 @@ export class MvSelect extends LitElement {
 
   selectItem = (option) => {
     const self = this;
-    return () => {
+    return (e) => {
+
+      if ( e.ctrlKey && (this.multiselect == true)) {
+
+
+        self.dispatchEvent(
+          new CustomEvent("select-option", { detail: { option } })
+        );
+        
+
+      }
+      else{
       self.dispatchEvent(
         new CustomEvent("select-option", { detail: { option } })
       );
     };
+
+
+  }
+
   };
 
   clearSearch = (originalEvent) => {
+
+    this.allValMultiSelect=[]
     const inputElement = this.shadowRoot.querySelector(".mv-select-input");
     inputElement.value = "";
     this.dispatchEvent(

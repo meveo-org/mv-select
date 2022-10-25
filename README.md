@@ -25,6 +25,7 @@ You can also check this [demo](https://select.meveo.org/)
 
 ```html
 <mv-select
+  .multiselect = "${true}"            // boolean for multiselect
   .value="${this.value}"              // the current selected value
   .options="${this.options}"          // the options for the dropdown
   @select-option="${event => {...}}"  // the custom event dispatched when an option is selected

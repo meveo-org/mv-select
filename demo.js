@@ -137,6 +137,7 @@ export class MvSelectDemo extends LitElement {
       default: null,
       searchable: null,
       alwaysOpen: null,
+      multiselect:true,
     };
     this.theme = "light";
   }
@@ -227,6 +228,7 @@ export class MvSelectDemo extends LitElement {
           <div class="input-group">
             <label>Always open</label>
             <mv-select
+              .multiselect = "${true}"
               .value="${this.value.alwaysOpen}"
               .options="${this.options.alwaysOpen}"
               .theme="${theme}"
