@@ -299,6 +299,8 @@ export class MvSelect extends LitElement {
         background-color: rgba(86,190,172, 0.1);
         border: 2px solid #56BEAC;
       }
+
+      .mv-select-values span{background:#3999C1;border-radius:5px;margin:2px;display:block;float:left;    padding: 3px 10px;color:#fff;cursor:pointer;}
     `;
   }
 
@@ -317,7 +319,7 @@ export class MvSelect extends LitElement {
     this.alwaysOpen = false;
     this.hasEmptyOption = false;
     this.noClearButton = false;
-    this.multiselect = true;
+
     this.theme="light";
     this.allValMultiSelect= [];
   }
@@ -386,22 +388,33 @@ export class MvSelect extends LitElement {
                 : html``}
             </div>
             ${this.open || alwaysOpen
-              ? html`
-                              ${this.multiselect == true
+              ? html`${this.multiselect == true
 
-? html`<div class="mv-select-values">${JSON.stringify(this.allValMultiSelect)}</div>`
-: html``}
+            ? html`<div class="mv-select-values">
+              
+
+              
+              ${this.allValMultiSelect
+                ? html`
+               ${this.allValMultiSelect.map((i,index) => html`<span data-options="${i}" class="data${index} datas" @click = ${() => this.removeSelectedData(index)} >${i} x</span>`)}
+             
+                   
+                  `
+                : html``}
+
+                </div>`
+                : html``}
 
                   ${options.length > 0
                     ? html`
                         <ul class="${optionsClass}">
-                          ${options.map((item) => {
+                          ${options.map((item,index) => {
                             const selectedClass =
                               item === this.value ? " selected" : "";
                             const itemClass = `mv-select-item${selectedClass}`;
                             return html`
                               <li
-                                class="${itemClass}"
+                                class="${itemClass} item${index}"
                                 @click="${this.selectItem(item)}"
                               >
                                 <slot name="custom-option">${item.label}</slot>
@@ -492,6 +505,8 @@ export class MvSelect extends LitElement {
       this.lastVal = option;
       this.allValMultiSelect.push(this.lastVal.value)
 
+   
+
       this.value = this.allValMultiSelect
   
       }
@@ -507,12 +522,52 @@ export class MvSelect extends LitElement {
     }
   };
 
+
+
+
+
+  removeSelectedData(i){
+
+
+
+    let selector = '.data' + i
+
+    
+
+
+
+
+
+
+     let options = this.shadowRoot.querySelector(selector).dataset.options
+
+     this.shadowRoot.querySelector(selector).remove()
+
+     this.allValMultiSelect.pop(options)
+
+     let deleteData = this.shadowRoot.querySelector(".datas")
+     if(deleteData == null){
+
+      this.clearSearch()
+
+     }
+
+   
+
+  }
+
+
+
+
+
   selectItem = (option) => {
     const self = this;
     return (e) => {
 
       if ( e.ctrlKey && (this.multiselect == true)) {
 
+      
+console.log(option)
 
         self.dispatchEvent(
           new CustomEvent("select-option", { detail: { option } })
