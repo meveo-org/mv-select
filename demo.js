@@ -227,8 +227,10 @@ export class MvSelectDemo extends LitElement {
 
           <div class="input-group">
             <label>Always open</label>
+
+
             <mv-select
-              .multiselect = "${true}"
+  
               .value="${this.value.alwaysOpen}"
               .options="${this.options.alwaysOpen}"
               .theme="${theme}"
@@ -238,8 +240,12 @@ export class MvSelectDemo extends LitElement {
               always-open
               searchable
             ></mv-select>
-          </div>
-          <div>
+
+            </div>
+
+           
+           
+            <div>
             <mv-toast
               type="information"
               .closeable="${false}"
@@ -253,6 +259,45 @@ export class MvSelectDemo extends LitElement {
               </div>
             </mv-toast>
           </div>
+
+            <div class="input-group">
+            <label>Multiple</label>      
+
+            <mv-select
+              .multiselect = "${true}"
+              .value="${this.value.alwaysOpen}"
+              .options="${this.options.alwaysOpen}"
+              .theme="${theme}"
+              @select-option="${this.displayValue("alwaysOpen")}"
+              @on-search="${this.searchValue("alwaysOpen")}"
+              @on-clear="${this.clearValue("alwaysOpen")}"
+              always-open
+              searchable
+            ></mv-select>
+
+
+            
+
+            
+          </div>
+
+
+
+            <div>
+            <mv-toast
+              type="information"
+              .closeable="${false}"
+              .theme="${theme}"
+            >
+              <h4>Multiple value:</h4>
+              <div class="message">
+                ${this.value &&
+                this.value.alwaysOpen &&
+                this.value.alwaysOpen.label}
+              </div>
+            </mv-toast>
+          </div>
+        
         </div>
       </mv-container>
     `;
