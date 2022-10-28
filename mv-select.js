@@ -432,7 +432,7 @@ export class MvSelect extends LitElement {
                         </ul>
                       `
                     : html``}
-                 ${options.length >  0
+                  ${options.length > 0
                     ? html`
                         <ul class="${optionsClass}">
                           ${options.map((item) => {
@@ -461,8 +461,6 @@ export class MvSelect extends LitElement {
                       `}
                 `
               : html``}
-
-              
           </div>
         </div>
       </mv-click-away>
@@ -537,11 +535,10 @@ export class MvSelect extends LitElement {
 
       this.lastVal = option
       this.allValMultiSelect.push(this.lastVal.value)
-
       this.value = this.allValMultiSelect
+      console.log (this.value)
 
 
-     // this.shadowRoot.querySelector('.mv-select-options').style.display = 'none'
     } else {
       this.value = option
     }
@@ -561,6 +558,8 @@ export class MvSelect extends LitElement {
 
     this.allValMultiSelect.pop(options)
 
+    console.log (this.allValMultiSelect)
+
     let deleteData = this.shadowRoot.querySelector('.datas')
 
     if (deleteData == null) {
@@ -570,27 +569,50 @@ export class MvSelect extends LitElement {
     selector = '.' + options
 
     this.shadowRoot.querySelector(selector).style.display = 'block'
+    
   }
 
+
+
+
+  renderSelectedItems() {
+    const itemTemplates = [];
+    for (const i of this.items) {
+      itemTemplates.push(html`<li>${i}</li>`);
+    }
+  
+    return html`
+      <ul>
+        ${itemTemplates}
+      </ul>
+    `;
+  }
+
+
+
+
   selectItem = (option) => {
+
+
     const self = this
     return (e) => {
       if (e.ctrlKey) {
         self.dispatchEvent(
           new CustomEvent('select-option', { detail: { option } }),
         )
+      } else if (this.multiselect == true) {
+
+        let selector = '.' + option.value
+        this.shadowRoot.querySelector(selector).style.display = 'none'
+
+        console.log(this.allValMultiSelect)
+
+        self.dispatchEvent(        
+          new CustomEvent('select-option', { detail: { option } }),
+        )
+
+
       } else {
-       
-       
-       
-        if (this.multiselect == true) {
-          let selector = '.' + option.value
-          this.shadowRoot.querySelector(selector).style.display = 'none'
-  
-        }
-
-
-        
         self.dispatchEvent(
           new CustomEvent('select-option', { detail: { option } }),
         )
