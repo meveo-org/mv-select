@@ -365,6 +365,7 @@ export class MvSelect extends LitElement {
     }`
     const label = this.value ? this.value.label : ''
     const value = this.showInput ? '' : label
+
     return html`
       <mv-click-away @clicked-away="${this.handleClickAway}">
         <div class="mv-select ">
@@ -532,13 +533,13 @@ export class MvSelect extends LitElement {
     this.value = option
 
     if (this.multiselect == true) {
-
       this.lastVal = option
+
       this.allValMultiSelect.push(this.lastVal.value)
+
       this.value = this.allValMultiSelect
-      console.log (this.value)
 
-
+      console.log(this.allValMultiSelect)
     } else {
       this.value = option
     }
@@ -554,11 +555,12 @@ export class MvSelect extends LitElement {
 
     let options = this.shadowRoot.querySelector(selector).dataset.options
 
-    this.shadowRoot.querySelector(selector).remove()
+    if ((this.itemRemoved = true)) {
+      this.shadowRoot.querySelector(selector).remove()
+    }
 
-    this.allValMultiSelect.pop(options)
-
-    console.log (this.allValMultiSelect)
+    this.allValMultiSelect.splice(i, 1)
+    console.log(this.allValMultiSelect)
 
     let deleteData = this.shadowRoot.querySelector('.datas')
 
@@ -569,31 +571,11 @@ export class MvSelect extends LitElement {
     selector = '.' + options
 
     this.shadowRoot.querySelector(selector).style.display = 'block'
-    
+
+    this.itemRemoved = true
   }
-
-
-
-
-  renderSelectedItems() {
-    const itemTemplates = [];
-    for (const i of this.items) {
-      itemTemplates.push(html`<li>${i}</li>`);
-    }
-  
-    return html`
-      <ul>
-        ${itemTemplates}
-      </ul>
-    `;
-  }
-
-
-
 
   selectItem = (option) => {
-
-
     const self = this
     return (e) => {
       if (e.ctrlKey) {
@@ -601,17 +583,21 @@ export class MvSelect extends LitElement {
           new CustomEvent('select-option', { detail: { option } }),
         )
       } else if (this.multiselect == true) {
+        if (this.itemRemoved != true) {
+          let selector = '.' + option.value
 
-        let selector = '.' + option.value
-        this.shadowRoot.querySelector(selector).style.display = 'none'
+          this.shadowRoot.querySelector(selector).style.display = 'none'
 
-        console.log(this.allValMultiSelect)
+          this.itemRemoved = false
 
-        self.dispatchEvent(        
-          new CustomEvent('select-option', { detail: { option } }),
-        )
-
-
+          self.dispatchEvent(
+            new CustomEvent('select-option', { detail: { option } }),
+          )
+        } else {
+          self.dispatchEvent(
+            new CustomEvent('select-option', { detail: { option } }),
+          )
+        }
       } else {
         self.dispatchEvent(
           new CustomEvent('select-option', { detail: { option } }),
