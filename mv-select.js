@@ -324,6 +324,13 @@ export class MvSelect extends LitElement {
         border: solid 1px #ccc;
         list-style: none;
       }
+      .reset{display:none !important;}
+      .clear {    position: relative;
+    float: right;
+    bottom: 53px;
+    height: 30px;
+  cursor:pointer;background:none;border:none;}
+  .selected {background-color:#3999C1;}
     `
   }
 
@@ -417,31 +424,35 @@ export class MvSelect extends LitElement {
               ? html`
                   ${this.multiselect == true
                     ? html`
-                        <ul class="mv-select-values">
+                        <ul class="mv-select-values"><li class="reset"></li>
                           ${this.allValMultiSelect.map(
                             (i, index) =>
                               html`
                                 <li
+                                
                                   data-options="${i}"
+                                  data-index=${index}
                                   class="data${index} datas"
-                                  @click=${() => this.removeSelectedData(index)}
+                                  }
+                                 }
                                 >
-                                  <slot name="custom-option">${i} x</slot>
+                                  <slot name="custom-option">${i}</slot>
                                 </li>
                               `,
                           )}
                         </ul>
+                        <button @click="${this.clearSearch}" class="clear">×</button>
                       `
                     : html``}
                   ${options.length > 0
                     ? html`
                         <ul class="${optionsClass}">
-                          ${options.map((item) => {
+                          ${options.map((item,index) => {
                             const selectedClass =
                               item === this.value ? ' selected' : ''
                             const itemClass = `mv-select-item${selectedClass}`
                             return html`
-                              <li
+                              <li  data-index="${index}"
                                 class="${itemClass} ${item.value}"
                                 @click="${this.selectItem(item)}"
                               >
@@ -549,18 +560,19 @@ export class MvSelect extends LitElement {
       this.showInput = false
     }
   }
-
+/*
   removeSelectedData(i) {
+
+
+
     let selector = '.data' + i
 
     let options = this.shadowRoot.querySelector(selector).dataset.options
 
-    if ((this.itemRemoved = true)) {
-      this.shadowRoot.querySelector(selector).remove()
-    }
-
+ 
+    this.shadowRoot.querySelector(selector).remove()
     this.allValMultiSelect.splice(i, 1)
-    console.log(this.allValMultiSelect)
+
 
     let deleteData = this.shadowRoot.querySelector('.datas')
 
@@ -571,9 +583,19 @@ export class MvSelect extends LitElement {
     selector = '.' + options
 
     this.shadowRoot.querySelector(selector).style.display = 'block'
+    this.shadowRoot.querySelector(selector).click()
+
 
     this.itemRemoved = true
+
+    this.value = this.allValMultiSelect
+
+    console.log(this.allValMultiSelect)
+
+
   }
+*/
+
 
   selectItem = (option) => {
     const self = this
@@ -586,7 +608,14 @@ export class MvSelect extends LitElement {
         if (this.itemRemoved != true) {
           let selector = '.' + option.value
 
-          this.shadowRoot.querySelector(selector).style.display = 'none'
+          console.log(option.value)
+
+          let indexList  = this.shadowRoot.querySelector(selector).dataset.index
+
+          this.options.splice(indexList, 1)
+          //this.options.splice(option.value, 1)
+
+        //  this.shadowRoot.querySelector(selector).style.display="none"
 
           this.itemRemoved = false
 
@@ -608,12 +637,18 @@ export class MvSelect extends LitElement {
 
   clearSearch = (originalEvent) => {
     this.allValMultiSelect = []
+
+
+    this.shadowRoot.querySelector('.mv-select-item').style.display="block"
+
     const inputElement = this.shadowRoot.querySelector('.mv-select-input')
     inputElement.value = ''
+
     this.dispatchEvent(
       new CustomEvent('on-clear', { detail: { originalEvent } }),
     )
     inputElement.focus()
+    
   }
 }
 
