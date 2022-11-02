@@ -311,6 +311,7 @@ export class MvSelectDemo extends LitElement {
       const {
         detail: { option },
       } = event
+      console.log("valeur de option : ", option)
       this.value = { ...this.value, [name]: option }
     }
   }
