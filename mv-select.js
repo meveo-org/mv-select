@@ -15,10 +15,11 @@ export class MvSelect extends LitElement {
       emptyLabel: { type: String, attribute: 'empty-label' },
       alwaysOpen: { type: Boolean, attribute: 'always-open' },
       // TODO - multi-select not yet implemented
-      multiSelect:{ type: Object, attribute: true, reflect: true },
+      multiSelect: { type: Array, attribute: true, reflect: true },
       showInput: { type: Boolean, attribute: false, reflect: true },
       theme: { type: String },
       isFilter: { type: Boolean, attribute: 'is-filter' },
+      allValMultiSelect: { type: Array, attribute: true, reflect: true },
     }
   }
 
@@ -358,9 +359,10 @@ export class MvSelect extends LitElement {
     this.alwaysOpen = false
     this.hasEmptyOption = false
     this.noClearButton = false
-
+    // this.multiSelect = []
     this.theme = 'light'
     this.allValMultiSelect = []
+    this.option = []
   }
 
   render() {
@@ -504,6 +506,7 @@ export class MvSelect extends LitElement {
       }
     }
     this.addEventListener('select-option', this.setValue)
+
     super.connectedCallback()
   }
 
@@ -553,20 +556,20 @@ export class MvSelect extends LitElement {
     const {
       detail: { option },
     } = event
-   // this.value = option
 
     if (this.multiselect == true) {
       this.lastVal = option
 
       this.allValMultiSelect.push(this.lastVal.value)
 
-      this.value = this.allValMultiSelect
 
+
+      this.value = JSON.parse(JSON.stringify(this.allValMultiSelect))
 
 
       
 
-
+      console.log(option)
     } else {
       this.value = option
     }
@@ -575,12 +578,13 @@ export class MvSelect extends LitElement {
     if (this.searchable) {
       this.showInput = false
     }
-
-
- 
-
-
   }
+
+
+
+
+
+
 
   removeSelectedData(i) {
     let selector = '.data' + i
@@ -591,7 +595,6 @@ export class MvSelect extends LitElement {
     this.shadowRoot.querySelector(selectedItem).style.display = 'none'
 
     this.allValMultiSelect.splice(i, 1)
-    console.log(this.allValMultiSelect)
 
     let deleteData = this.shadowRoot.querySelector('.datas')
 
@@ -604,6 +607,7 @@ export class MvSelect extends LitElement {
     this.shadowRoot.querySelector(selector).style.display = 'block'
 
     this.itemRemoved = true
+    this.value = JSON.parse(JSON.stringify(this.allValMultiSelect))
   }
 
   selectItem = (option) => {
@@ -625,7 +629,9 @@ export class MvSelect extends LitElement {
         if (this.itemRemoved == true) {
           let bubble = '.selected-' + optionList
           console.log(bubble)
-          this.shadowRoot.querySelector(bubble).style.display = 'block'
+          if (this.shadowRoot.querySelector(bubble)) {
+            this.shadowRoot.querySelector(bubble).style.display = 'block'
+          }
         }
 
         this.shadowRoot.querySelector(selector).style.display = 'none'
@@ -638,8 +644,8 @@ export class MvSelect extends LitElement {
 
         this.itemRemoved = false
 
-     
-        
+        //let  option = this.allValMultiSelect
+
         self.dispatchEvent(
           new CustomEvent('select-option', { detail: { option } }),
         )

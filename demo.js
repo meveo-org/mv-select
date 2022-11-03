@@ -143,6 +143,7 @@ export class MvSelectDemo extends LitElement {
       multiselect: true,
     }
     this.theme = 'light'
+
   }
 
   render() {
@@ -266,10 +267,10 @@ export class MvSelectDemo extends LitElement {
 
             <mv-select
               .multiselect="${true}"
-              .value="${this.value.alwaysOpen}"
+              .value="${this.multiSelect}"
               .options="${this.options.alwaysOpen}"
               .theme="${theme}"
-              @select-option="${this.displayValue('alwaysOpen')}"
+              @select-option="${ this.displayValues('alwaysOpen') }"
               @on-search="${this.searchValue('alwaysOpen')}"
               @on-clear="${this.clearValue('alwaysOpen')}"
               always-open
@@ -285,9 +286,10 @@ export class MvSelectDemo extends LitElement {
             >
               <h4>Multiple value:</h4>
               <div class="message">
-                ${this.value &&
+              ${this.value &&
                 this.value.alwaysOpen &&
                 this.value.alwaysOpen.label}
+              
               </div>
             </mv-toast>
           </div>
@@ -296,6 +298,8 @@ export class MvSelectDemo extends LitElement {
     `
   }
 
+
+  
   connectedCallback() {
     this.options = Object.keys(this.options).reduce(
       (options, key) => ({ ...options, [key]: this.resetOptions() }),
@@ -311,10 +315,41 @@ export class MvSelectDemo extends LitElement {
       const {
         detail: { option },
       } = event
-      console.log("valeur de option : ", option)
+
       this.value = { ...this.value, [name]: option }
     }
   }
+
+
+
+  displayValues(test){
+    
+    //let selectedValues =  this.shadowRoot.querySelector('mv-select')
+
+    console.log ("valeurs = "+ test )
+
+
+  }
+
+
+
+  displayValues = (name) => {
+    return (event) => {
+      const {
+        detail: { option },
+      } = event
+
+
+    let selectedValues =  this.shadowRoot.querySelector('mv-select')
+
+    selectedValues = selectedValues
+
+    console.log ("valeurs = "+ selectedValues )
+
+      this.value = { ...this.value, [name]: option }
+    }
+  }
+
 
   searchValue = (name) => {
     return (event) => {
