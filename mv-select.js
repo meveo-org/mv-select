@@ -616,7 +616,7 @@ export class MvSelect extends LitElement {
     })
 
     this.itemRemoved = true
-    this.value = JSON.parse(JSON.stringify(this.allValMultiSelect))
+    this.value = this.allValMultiSelect
 
     console.log(this.value)
   }
