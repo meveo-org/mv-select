@@ -267,9 +267,7 @@ export class MvSelectDemo extends LitElement {
             <label>Multiple</label>
 
             <mv-select
-
-            .multiselect="${true}"
-            .value="${this.value.alwaysOpen}"
+              .value="${this.value.alwaysOpen}"
               .options="${this.options.alwaysOpen}"
               .theme="${theme}"
               @select-option="${ this.displayValues('multiSelect') }"

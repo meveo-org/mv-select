@@ -15,7 +15,7 @@ export class MvSelect extends LitElement {
       emptyLabel: { type: String, attribute: 'empty-label' },
       alwaysOpen: { type: Boolean, attribute: 'always-open' },
       // TODO - multi-select not yet implemented
-      multiSelect: { type: Array, attribute: true, reflect: true },
+      multiSelect: { type: Boolean, attribute: 'multi-select' },
       showInput: { type: Boolean, attribute: false, reflect: true },
       theme: { type: String },
       isFilter: { type: Boolean, attribute: 'is-filter' },
@@ -357,10 +357,9 @@ export class MvSelect extends LitElement {
     this.open = false
     this.showInput = false
     this.alwaysOpen = false
-    this.multiSelect = true
+    this.multiSelect = false
     this.hasEmptyOption = false
     this.noClearButton = false
-    // this.multiSelect = []
     this.theme = 'light'
     this.allValMultiSelect = []
     this.option = []
@@ -368,12 +367,14 @@ export class MvSelect extends LitElement {
 
   render() {
     const alwaysOpen = this.alwaysOpen
+    const multiSelect = false
     const options = this.hasEmptyOption
       ? [this.emptyOption, ...this.options]
       : this.options
     const clearClass = this.noClearButton ? ' no-clear' : ''
     const dropdownClass = alwaysOpen ? ' no-dropdown' : ''
     const searchableClass = this.searchable ? 'searchable' : 'static'
+    const multiSelectClass = this.multiSelect ? 'multiselect' : 'no-multiselect'
     const inputClass = `mv-select-input ${searchableClass}${dropdownClass}${clearClass}`
     const clearButtonClass = `mv-select-clear-button${dropdownClass}`
     const dropdownButtonClass = `mv-select-dropdown-button ${
@@ -384,6 +385,8 @@ export class MvSelect extends LitElement {
     }`
     const label = this.value ? this.value.label : ''
     const value = this.showInput ? '' : label
+
+
 
     return html`
       <mv-click-away @clicked-away="${this.handleClickAway}">
@@ -434,7 +437,7 @@ export class MvSelect extends LitElement {
             </div>
             ${this.open || alwaysOpen
               ? html`
-                  ${this.multiselect == true
+                  ${this.multiSelect
                     ? html`
                         <ul class="mv-select-values">
                           <li class="reset"></li>
@@ -459,7 +462,7 @@ export class MvSelect extends LitElement {
                     : html``}
                   ${options.length > 0
                     ? html`
-                        <ul class="${optionsClass}">
+                        <ul class="${optionsClass} ${multiSelectClass}">
                           ${options.map((item, index) => {
                             const selectedClass =
                               item === this.value ? ' selected' : ''
@@ -493,11 +496,27 @@ export class MvSelect extends LitElement {
       </mv-click-away>
     `
   }
+
+
+
+
+
+
+  
   firstUpdated() {
-    if (this.multiselect) {
+    if (this.multiSelect) {
       this.shadowRoot.querySelector('.mv-select-input-group').style.display =
         'none'
     }
+
+    
+  if (this.multiSelect) {
+
+    console.log (this.multiSelect)
+
+  }
+
+
   }
   connectedCallback() {
     if (this.hasEmptyOption) {
@@ -558,19 +577,14 @@ export class MvSelect extends LitElement {
       detail: { option },
     } = event
 
-    if (this.multiselect == true) {
+    if (this.multiSelect == true) {
       this.lastVal = option
 
       this.allValMultiSelect.push(this.lastVal.value)
 
-
-
       this.value = JSON.parse(JSON.stringify(this.allValMultiSelect))
 
-
-
-      console.log (this.allValMultiSelect)
-    
+      console.log(this.allValMultiSelect)
     } else {
       this.value = option
     }
@@ -580,12 +594,6 @@ export class MvSelect extends LitElement {
       this.showInput = false
     }
   }
-
-
-
-
-
-
 
   removeSelectedData(i) {
     let selector = '.data' + i
@@ -597,14 +605,9 @@ export class MvSelect extends LitElement {
 
     this.allValMultiSelect.splice(i, 1)
 
-
-
-
-
     selector = '.' + options
 
     this.shadowRoot.querySelector(selector).style.display = 'block'
-
 
     const elements = this.shadowRoot.querySelectorAll('.datas')
 
@@ -612,17 +615,10 @@ export class MvSelect extends LitElement {
       el.style.display = 'block'
     })
 
-
-
-
-
-
-
-
     this.itemRemoved = true
     this.value = JSON.parse(JSON.stringify(this.allValMultiSelect))
 
-    console.log (this.value)
+    console.log(this.value)
   }
 
   selectItem = (option) => {
@@ -658,8 +654,6 @@ export class MvSelect extends LitElement {
         })
 
         this.itemRemoved = false
-
-
 
         //let  option = this.allValMultiSelect
 
