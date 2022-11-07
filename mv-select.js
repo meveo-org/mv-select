@@ -15,7 +15,7 @@ export class MvSelect extends LitElement {
       emptyLabel: { type: String, attribute: 'empty-label' },
       alwaysOpen: { type: Boolean, attribute: 'always-open' },
       // TODO - multi-select not yet implemented
-      multiSelect: { type: Array, attribute: true, reflect: true },
+      multiSelect: { type: Boolean, attribute: 'multi-select' },
       showInput: { type: Boolean, attribute: false, reflect: true },
       theme: { type: String },
       isFilter: { type: Boolean, attribute: 'is-filter' },
@@ -357,6 +357,7 @@ export class MvSelect extends LitElement {
     this.open = false
     this.showInput = false
     this.alwaysOpen = false
+    this.multiSelect = true
     this.hasEmptyOption = false
     this.noClearButton = false
     // this.multiSelect = []
@@ -433,7 +434,7 @@ export class MvSelect extends LitElement {
             </div>
             ${this.open || alwaysOpen
               ? html`
-                  ${this.multiselect == true
+                  ${this.multiSelect == true
                     ? html`
                         <ul class="mv-select-values">
                           <li class="reset"></li>
@@ -493,7 +494,7 @@ export class MvSelect extends LitElement {
     `
   }
   firstUpdated() {
-    if (this.multiselect) {
+    if (this.multiSelect) {
       this.shadowRoot.querySelector('.mv-select-input-group').style.display =
         'none'
     }
@@ -557,7 +558,7 @@ export class MvSelect extends LitElement {
       detail: { option },
     } = event
 
-    if (this.multiselect == true) {
+    if (this.multiSelect == true) {
       this.lastVal = option
 
       this.allValMultiSelect.push(this.lastVal.value)
@@ -631,7 +632,7 @@ export class MvSelect extends LitElement {
         self.dispatchEvent(
           new CustomEvent('select-option', { detail: { option } }),
         )
-      } else if (this.multiselect == true) {
+      } else if (this.multiSelect == true) {
         let selector = '.' + option.value
 
         let optionList = this.shadowRoot.querySelector(selector).dataset.option
