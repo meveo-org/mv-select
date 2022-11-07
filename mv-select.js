@@ -567,9 +567,9 @@ export class MvSelect extends LitElement {
       this.value = JSON.parse(JSON.stringify(this.allValMultiSelect))
 
 
-      
 
-      console.log(option)
+      console.log (this.allValMultiSelect)
+    
     } else {
       this.value = option
     }
@@ -596,18 +596,32 @@ export class MvSelect extends LitElement {
 
     this.allValMultiSelect.splice(i, 1)
 
-    let deleteData = this.shadowRoot.querySelector('.datas')
 
-    if (deleteData == null) {
-      this.clearSearch()
-    }
+
+
 
     selector = '.' + options
 
     this.shadowRoot.querySelector(selector).style.display = 'block'
 
+
+    const elements = this.shadowRoot.querySelectorAll('.datas')
+
+    Array.from(elements).forEach((el) => {
+      el.style.display = 'block'
+    })
+
+
+
+
+
+
+
+
     this.itemRemoved = true
     this.value = JSON.parse(JSON.stringify(this.allValMultiSelect))
+
+    console.log (this.value)
   }
 
   selectItem = (option) => {
@@ -628,7 +642,7 @@ export class MvSelect extends LitElement {
 
         if (this.itemRemoved == true) {
           let bubble = '.selected-' + optionList
-          console.log(bubble)
+
           if (this.shadowRoot.querySelector(bubble)) {
             this.shadowRoot.querySelector(bubble).style.display = 'block'
           }
@@ -643,6 +657,8 @@ export class MvSelect extends LitElement {
         })
 
         this.itemRemoved = false
+
+
 
         //let  option = this.allValMultiSelect
 

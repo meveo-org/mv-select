@@ -322,16 +322,6 @@ export class MvSelectDemo extends LitElement {
 
 
 
-  displayValues(test){
-    
-    //let selectedValues =  this.shadowRoot.querySelector('mv-select')
-
-    console.log ("valeurs = "+ test )
-
-
-  }
-
-
 
   displayValues = (name) => {
     return (event) => {
@@ -339,12 +329,6 @@ export class MvSelectDemo extends LitElement {
         detail: { option },
       } = event
 
-
-    let selectedValues =  this.shadowRoot.querySelector('mv-select')
-
-    selectedValues = selectedValues
-
-    console.log ("valeurs = "+ selectedValues )
 
       this.value = { ...this.value, [name]: option }
     }
