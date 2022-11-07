@@ -15,7 +15,7 @@ export class MvSelect extends LitElement {
       emptyLabel: { type: String, attribute: 'empty-label' },
       alwaysOpen: { type: Boolean, attribute: 'always-open' },
       // TODO - multi-select not yet implemented
-      multiSelect: { type: Boolean, attribute: 'multi-select' },
+      multiSelect: { type: Array, attribute: true, reflect: true },
       showInput: { type: Boolean, attribute: false, reflect: true },
       theme: { type: String },
       isFilter: { type: Boolean, attribute: 'is-filter' },
@@ -434,7 +434,7 @@ export class MvSelect extends LitElement {
             </div>
             ${this.open || alwaysOpen
               ? html`
-                  ${this.multiSelect == true
+                  ${this.multiselect == true
                     ? html`
                         <ul class="mv-select-values">
                           <li class="reset"></li>
@@ -494,7 +494,7 @@ export class MvSelect extends LitElement {
     `
   }
   firstUpdated() {
-    if (this.multiSelect) {
+    if (this.multiselect) {
       this.shadowRoot.querySelector('.mv-select-input-group').style.display =
         'none'
     }
@@ -558,7 +558,7 @@ export class MvSelect extends LitElement {
       detail: { option },
     } = event
 
-    if (this.multiSelect == true) {
+    if (this.multiselect == true) {
       this.lastVal = option
 
       this.allValMultiSelect.push(this.lastVal.value)

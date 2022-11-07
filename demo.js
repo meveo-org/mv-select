@@ -141,7 +141,7 @@ export class MvSelectDemo extends LitElement {
       searchable: null,
       alwaysOpen: null,
       multiselect: true,
-      multiSelect: null,
+      multiSelect: true,
     }
     this.theme = 'light'
 
@@ -267,8 +267,10 @@ export class MvSelectDemo extends LitElement {
             <label>Multiple</label>
 
             <mv-select
-              .value="${this.multiSelect}"
-              .options="${this.options.multiSelect}"
+
+            .multiselect="${true}"
+            .value="${this.value.alwaysOpen}"
+              .options="${this.options.alwaysOpen}"
               .theme="${theme}"
               @select-option="${ this.displayValues('multiSelect') }"
               @on-search="${this.searchValue('multiSelect')}"
