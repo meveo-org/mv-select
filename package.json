@@ -20,10 +20,15 @@
   },
   "homepage": "https://github.com/meveo-org/mv-select#readme",
   "dependencies": {
-    "lit": "^2.0.2",
-    "@meveo-org/mv-click-away": "^1.0.0"
+    "@meveo-org/mv-click-away": "^1.0.0",
+    "lit": "^2.0.2"
   },
   "devDependencies": {
+    "@meveo-org/mv-button": "^1.0.1",
+    "@meveo-org/mv-container": "^1.0.0",
+    "@meveo-org/mv-font-awesome": "^1.0.0",
+    "@meveo-org/mv-linear-icons": "^1.0.0",
+    "@meveo-org/mv-toast": "^1.0.0",
     "es-dev-server": "^1.46.1"
   }
 }
