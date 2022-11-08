@@ -582,8 +582,7 @@ export class MvSelect extends LitElement {
 
       this.allValMultiSelect.push(this.lastVal.value)
 
-      this.value = JSON.parse(JSON.stringify(this.allValMultiSelect))
-
+      this.value = { ... this.allValMultiSelect }; // JSON.parse(JSON.stringify(this.allValMultiSelect))
       console.log(this.allValMultiSelect)
     } else {
       this.value = option
@@ -616,7 +615,7 @@ export class MvSelect extends LitElement {
     })
 
     this.itemRemoved = true
-    this.value = JSON.parse(JSON.stringify(this.allValMultiSelect))
+    this.value = { ... this.allValMultiSelect };//    JSON.parse(JSON.stringify(this.allValMultiSelect))
 
     console.log(this.value)
   }
