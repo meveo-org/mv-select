@@ -212,7 +212,7 @@ export class MvSelect extends LitElement {
         top: calc(var(--full-height) + 2px);
       }
 
-      .always-open .mv-select-options {
+      .mv-select-options {
         top: 2px;
         position: relative;
       }
@@ -386,8 +386,6 @@ export class MvSelect extends LitElement {
     const label = this.value ? this.value.label : ''
     const value = this.showInput ? '' : label
 
-
-
     return html`
       <mv-click-away @clicked-away="${this.handleClickAway}">
         <div class="mv-select ">
@@ -435,7 +433,7 @@ export class MvSelect extends LitElement {
                   `
                 : html``}
             </div>
-            ${this.open || alwaysOpen
+            ${this.open || alwaysOpen || this.multiSelect
               ? html`
                   ${this.multiSelect
                     ? html`
@@ -497,26 +495,15 @@ export class MvSelect extends LitElement {
     `
   }
 
-
-
-
-
-
-  
   firstUpdated() {
     if (this.multiSelect) {
       this.shadowRoot.querySelector('.mv-select-input-group').style.display =
         'none'
     }
 
-    
-  if (this.multiSelect) {
-
-    console.log (this.multiSelect)
-
-  }
-
-
+    if (this.multiSelect) {
+      console.log(this.multiSelect)
+    }
   }
   connectedCallback() {
     if (this.hasEmptyOption) {
@@ -582,7 +569,7 @@ export class MvSelect extends LitElement {
 
       this.allValMultiSelect.push(this.lastVal.value)
 
-      this.value = { ... this.allValMultiSelect }; // JSON.parse(JSON.stringify(this.allValMultiSelect))
+      this.value = { ...this.allValMultiSelect } // JSON.parse(JSON.stringify(this.allValMultiSelect))
       console.log(this.allValMultiSelect)
     } else {
       this.value = option
@@ -615,7 +602,7 @@ export class MvSelect extends LitElement {
     })
 
     this.itemRemoved = true
-    this.value = { ... this.allValMultiSelect };//    JSON.parse(JSON.stringify(this.allValMultiSelect))
+    this.value = { ...this.allValMultiSelect }
 
     console.log(this.value)
   }

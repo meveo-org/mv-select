@@ -144,7 +144,6 @@ export class MvSelectDemo extends LitElement {
       multiSelect: true,
     }
     this.theme = 'light'
-
   }
 
   render() {
@@ -270,11 +269,9 @@ export class MvSelectDemo extends LitElement {
               .value="${this.value.alwaysOpen}"
               .options="${this.options.alwaysOpen}"
               .theme="${theme}"
-              @select-option="${ this.displayValues('multiSelect') }"
+              @select-option="${this.displayValues('multiSelect')}"
               @on-search="${this.searchValue('multiSelect')}"
               @on-clear="${this.clearValue('multiSelect')}"
-              always-open
-              searchable
               multi-select
             ></mv-select>
           </div>
@@ -288,11 +285,9 @@ export class MvSelectDemo extends LitElement {
               <h4>Multiple value:</h4>
               <div class="message">
                 ${this.multiSelect}
-                
-              ${this.value &&
+                ${this.value &&
                 this.value.multiSelect &&
                 this.value.multiSelect.label}
-              
               </div>
             </mv-toast>
           </div>
@@ -301,8 +296,6 @@ export class MvSelectDemo extends LitElement {
     `
   }
 
-
-  
   connectedCallback() {
     this.options = Object.keys(this.options).reduce(
       (options, key) => ({ ...options, [key]: this.resetOptions() }),
@@ -323,20 +316,15 @@ export class MvSelectDemo extends LitElement {
     }
   }
 
-
-
-
   displayValues = (name) => {
     return (event) => {
       const {
         detail: { option },
       } = event
 
-
       this.value = { ...this.value, [name]: option }
     }
   }
-
 
   searchValue = (name) => {
     return (event) => {
