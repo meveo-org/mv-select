@@ -273,6 +273,7 @@ export class MvSelectDemo extends LitElement {
               @on-search="${this.searchValue('multiSelect')}"
               @on-clear="${this.clearValue('multiSelect')}"
               multi-select
+              searchable
             ></mv-select>
           </div>
 

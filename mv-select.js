@@ -241,6 +241,7 @@ export class MvSelect extends LitElement {
         display: table;
         width: 96%;
         margin-bottom: -20px;
+        min-height: 60px;
       }
 
       .mv-select-item.selected,
@@ -332,14 +333,37 @@ export class MvSelect extends LitElement {
       .clear {
         position: relative;
         float: right;
+        bottom: 50px;
+        height: 30px;
+        cursor: pointer;
+        background: none;
+        border: none;
+        left: 23px;
+      }
+
+      .toggle-select {
+        position: relative;
+        float: right;
         bottom: 15px;
         height: 30px;
         cursor: pointer;
         background: none;
         border: none;
       }
+
       .selected {
         background-color: #3999c1;
+      }
+      .multiselect {
+        display: none;
+      }
+      .select-one{
+
+        position: absolute;
+    bottom: -20px;
+    left: 20px;
+
+
       }
     `
   }
@@ -363,6 +387,7 @@ export class MvSelect extends LitElement {
     this.theme = 'light'
     this.allValMultiSelect = []
     this.option = []
+    this.stateMultiSelect = false
   }
 
   render() {
@@ -453,6 +478,14 @@ export class MvSelect extends LitElement {
                               `,
                           )}
                         </ul>
+                              <p class="select-one">- Select one -</p>
+                        <button
+                          @click="${this.toggleMultiSelectList}"
+                          class="toggle-select"
+                        >
+                          ▼
+                        </button>
+
                         <button @click="${this.clearSearch}" class="clear">
                           ×
                         </button>
@@ -499,10 +532,6 @@ export class MvSelect extends LitElement {
     if (this.multiSelect) {
       this.shadowRoot.querySelector('.mv-select-input-group').style.display =
         'none'
-    }
-
-    if (this.multiSelect) {
-      console.log(this.multiSelect)
     }
   }
   connectedCallback() {
@@ -571,6 +600,13 @@ export class MvSelect extends LitElement {
 
       this.value = { ...this.allValMultiSelect } // JSON.parse(JSON.stringify(this.allValMultiSelect))
       console.log(this.allValMultiSelect)
+
+
+      this.shadowRoot.querySelector('.select-one').style.display ="none"
+
+
+
+
     } else {
       this.value = option
     }
@@ -653,7 +689,19 @@ export class MvSelect extends LitElement {
       }
     }
   }
-
+  toggleMultiSelectList() {
+    if (this.stateMultiSelect == true) {
+      this.shadowRoot.querySelector('.multiselect').style.display = 'none'
+      this.shadowRoot.querySelector('.toggle-select').style.transform =
+        'rotate(0deg)'
+      this.stateMultiSelect = false
+    } else {
+      this.shadowRoot.querySelector('.multiselect').style.display = 'block'
+      this.shadowRoot.querySelector('.toggle-select').style.transform =
+        'rotate(180deg)'
+      this.stateMultiSelect = true
+    }
+  }
   clearSearch = (originalEvent) => {
     this.allValMultiSelect = []
     this.itemRemoved = false
@@ -672,6 +720,7 @@ export class MvSelect extends LitElement {
       new CustomEvent('on-clear', { detail: { originalEvent } }),
     )
     inputElement.focus()
+    this.shadowRoot.querySelector('.select-one').style.display ="block"
   }
 }
 
