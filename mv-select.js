@@ -14,7 +14,6 @@ export class MvSelect extends LitElement {
       noClearButton: { type: Boolean, attribute: 'no-clear-button' },
       emptyLabel: { type: String, attribute: 'empty-label' },
       alwaysOpen: { type: Boolean, attribute: 'always-open' },
-      // TODO - multi-select not yet implemented
       multiSelect: { type: Boolean, attribute: 'multi-select' },
       showInput: { type: Boolean, attribute: false, reflect: true },
       theme: { type: String },
@@ -239,9 +238,9 @@ export class MvSelect extends LitElement {
         height: auto;
         padding: var(--input-padding);
         display: table;
-        width: 96%;
+        width: 70%;
         margin-bottom: -20px;
-        min-height: 60px;
+        min-height: 30px;
       }
 
       .mv-select-item.selected,
@@ -332,13 +331,20 @@ export class MvSelect extends LitElement {
       }
       .clear {
         position: relative;
-        float: right;
-        bottom: 50px;
+
+        bottom: 22px;
         height: 30px;
         cursor: pointer;
         background: none;
         border: none;
-        left: 23px;
+        background-color: var(--button-color, #dd5c55);
+        color: #fff;
+        font-size: 20px;
+        border-radius: 5px;
+        border: none;
+        float: right;
+        height: 40px;
+        width: 20%;
       }
 
       .toggle-select {
@@ -349,6 +355,7 @@ export class MvSelect extends LitElement {
         cursor: pointer;
         background: none;
         border: none;
+        right: 30%;
       }
 
       .selected {
@@ -357,13 +364,13 @@ export class MvSelect extends LitElement {
       .multiselect {
         display: none;
       }
-      .select-one{
-
+      .select-one {
         position: absolute;
-    bottom: -20px;
-    left: 20px;
-
-
+        bottom: -5px;
+        left: 20px;
+        width: 60%;
+        z-index: 9;
+        cursor: pointer;
       }
     `
   }
@@ -392,7 +399,6 @@ export class MvSelect extends LitElement {
 
   render() {
     const alwaysOpen = this.alwaysOpen
-    const multiSelect = false
     const options = this.hasEmptyOption
       ? [this.emptyOption, ...this.options]
       : this.options
@@ -478,11 +484,13 @@ export class MvSelect extends LitElement {
                               `,
                           )}
                         </ul>
-                              <p class="select-one">- Select one -</p>
-                        <button
+                        <p
+                          class="select-one"
                           @click="${this.toggleMultiSelectList}"
-                          class="toggle-select"
                         >
+                          - Select one -
+                        </p>
+                        <button class="toggle-select">
                           ▼
                         </button>
 
@@ -529,9 +537,22 @@ export class MvSelect extends LitElement {
   }
 
   firstUpdated() {
+    console.log(this.alwaysOpen)
+
     if (this.multiSelect) {
       this.shadowRoot.querySelector('.mv-select-input-group').style.display =
         'none'
+    }
+    if (this.alwaysOpen && this.multiSelect) {
+      this.shadowRoot.querySelector('.multiselect').style.display = 'block'
+
+      this.shadowRoot.querySelector('.toggle-select').style.display = 'none'
+    }
+    if (this.multiSelect && !this.alwaysOpen) {
+      this.shadowRoot.querySelector('.toggle-select').style.display = 'block'
+      this.shadowRoot.querySelector('.toggle-select').style.transform =
+        'rotate(0deg)'
+      this.shadowRoot.querySelector('.toggle-select').style.marginLeft = '-25px'
     }
   }
   connectedCallback() {
@@ -601,12 +622,7 @@ export class MvSelect extends LitElement {
       this.value = { ...this.allValMultiSelect } // JSON.parse(JSON.stringify(this.allValMultiSelect))
       console.log(this.allValMultiSelect)
 
-
-      this.shadowRoot.querySelector('.select-one').style.display ="none"
-
-
-
-
+      this.shadowRoot.querySelector('.select-one').style.display = 'none'
     } else {
       this.value = option
     }
@@ -675,9 +691,9 @@ export class MvSelect extends LitElement {
           el.style.display = 'block'
         })
 
-        this.itemRemoved = false
+        this.shadowRoot.querySelector('.toggle-select').style.display = 'none'
 
-        //let  option = this.allValMultiSelect
+        this.itemRemoved = false
 
         self.dispatchEvent(
           new CustomEvent('select-option', { detail: { option } }),
@@ -690,16 +706,19 @@ export class MvSelect extends LitElement {
     }
   }
   toggleMultiSelectList() {
-    if (this.stateMultiSelect == true) {
-      this.shadowRoot.querySelector('.multiselect').style.display = 'none'
-      this.shadowRoot.querySelector('.toggle-select').style.transform =
-        'rotate(0deg)'
-      this.stateMultiSelect = false
+    if (this.alwaysOpen) {
     } else {
-      this.shadowRoot.querySelector('.multiselect').style.display = 'block'
-      this.shadowRoot.querySelector('.toggle-select').style.transform =
-        'rotate(180deg)'
-      this.stateMultiSelect = true
+      if (this.stateMultiSelect == true) {
+        this.shadowRoot.querySelector('.multiselect').style.display = 'none'
+        this.shadowRoot.querySelector('.toggle-select').style.transform =
+          'rotate(0deg)'
+        this.stateMultiSelect = false
+      } else {
+        this.shadowRoot.querySelector('.multiselect').style.display = 'block'
+        this.shadowRoot.querySelector('.toggle-select').style.transform =
+          'rotate(180deg)'
+        this.stateMultiSelect = true
+      }
     }
   }
   clearSearch = (originalEvent) => {
@@ -720,7 +739,20 @@ export class MvSelect extends LitElement {
       new CustomEvent('on-clear', { detail: { originalEvent } }),
     )
     inputElement.focus()
-    this.shadowRoot.querySelector('.select-one').style.display ="block"
+
+    this.shadowRoot.querySelector('.select-one').style.display = 'block'
+
+    if (this.multiSelect && !this.alwaysOpen) {
+      this.shadowRoot.querySelector('.toggle-select').style.display = 'block'
+      this.shadowRoot.querySelector('.toggle-select').style.transform =
+        'rotate(0deg)'
+      this.shadowRoot.querySelector('.toggle-select').style.marginLeft = '-25px'
+    }
+
+    if (!this.alwaysOpen) {
+      this.shadowRoot.querySelector('.multiselect').style.display = 'none'
+      this.stateMultiSelect = false
+    }
   }
 }
 
