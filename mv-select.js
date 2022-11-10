@@ -228,7 +228,7 @@ export class MvSelect extends LitElement {
         padding: var(--option-item-padding);
         display: block;
       }
-      .mv-select-values {
+      .mv-select-values-container {
         position: relative;
         //display: grid;
         place-items: center start;
@@ -238,9 +238,10 @@ export class MvSelect extends LitElement {
         height: auto;
         padding: var(--input-padding);
         display: table;
-        width: 70%;
+        width: 96%;
         margin-bottom: -20px;
         min-height: 30px;
+        padding: 0;
       }
 
       .mv-select-item.selected,
@@ -331,31 +332,27 @@ export class MvSelect extends LitElement {
       }
       .clear {
         position: relative;
-
-        bottom: 22px;
-        height: 30px;
+        bottom: 4px;
         cursor: pointer;
-        background: none;
-        border: none;
-        background-color: var(--button-color, #dd5c55);
-        color: #fff;
-        font-size: 20px;
+        background-color: none;
+        color: rgb(0, 0, 0);
         border-radius: 5px;
         border: none;
         float: right;
-        height: 40px;
-        width: 20%;
+        height: 20px;
+        width: 20px;
+        right: 25px;
       }
 
       .toggle-select {
         position: relative;
         float: right;
-        bottom: 15px;
+
         height: 30px;
         cursor: pointer;
         background: none;
         border: none;
-        right: 30%;
+        bottom: 9px;
       }
 
       .selected {
@@ -363,15 +360,24 @@ export class MvSelect extends LitElement {
       }
       .multiselect {
         display: none;
+        position: relative;
+        top: 30px;
       }
       .select-one {
         position: absolute;
-        bottom: -5px;
+        bottom: -2px;
         left: 20px;
         width: 60%;
         z-index: 9;
         cursor: pointer;
       }
+      .mv-select-values {
+        display: block;
+        padding: 0px 30px 0px 10px;
+        margin-top: 9px;
+      }   
+
+
     `
   }
 
@@ -468,35 +474,42 @@ export class MvSelect extends LitElement {
               ? html`
                   ${this.multiSelect
                     ? html`
-                        <ul class="mv-select-values">
-                          <li class="reset"></li>
-                          ${this.allValMultiSelect.map(
-                            (i, index) =>
-                              html`
-                                <li
-                                  data-options=${i}
-                                  data-index=${index}
-                                  class="data${index} datas selected-${i}"
-                                  @click=${() => this.removeSelectedData(index)}
-                                >
-                                  <slot name="custom-option">${i} ×</slot>
-                                </li>
-                              `,
-                          )}
-                        </ul>
-                        <p
-                          class="select-one"
-                          @click="${this.toggleMultiSelectList}"
-                        >
-                          - Select one -
-                        </p>
-                        <button class="toggle-select">
-                          ▼
-                        </button>
+                        <div class="mv-select-values-container">
+                          <ul class="mv-select-values">
+                            <li class="reset"></li>
+                            ${this.allValMultiSelect.map(
+                              (i, index) =>
+                                html`
+                                  <li
+                                    data-options=${i}
+                                    data-index=${index}
+                                    class="data${index} datas selected-${i}"
+                                    @click=${() =>
+                                      this.removeSelectedData(index)}
+                                  >
+                                    <slot name="custom-option">${i} ×</slot>
+                                  </li>
+                                `,
+                            )}
+                          </ul>
 
-                        <button @click="${this.clearSearch}" class="clear">
-                          ×
-                        </button>
+                          <p
+                            class="select-one"
+                            @click="${this.toggleMultiSelectList}"
+                          >
+                            - Select one -
+                          </p>
+                          <button
+                            class="toggle-select"
+                            @click="${this.toggleMultiSelectList}"
+                          >
+                            ▼
+                          </button>
+
+                          <button @click="${this.clearSearch}" class="clear">
+                            ×
+                          </button>
+                        </div>
                       `
                     : html``}
                   ${options.length > 0
@@ -539,6 +552,8 @@ export class MvSelect extends LitElement {
   firstUpdated() {
     console.log(this.alwaysOpen)
 
+
+
     if (this.multiSelect) {
       this.shadowRoot.querySelector('.mv-select-input-group').style.display =
         'none'
@@ -546,7 +561,8 @@ export class MvSelect extends LitElement {
     if (this.alwaysOpen && this.multiSelect) {
       this.shadowRoot.querySelector('.multiselect').style.display = 'block'
 
-      this.shadowRoot.querySelector('.toggle-select').style.display = 'none'
+      this.shadowRoot.querySelector('.toggle-select').style.opacity = 0
+      this.shadowRoot.querySelector('.toggle-select').style.marginLeft = '-40px'
     }
     if (this.multiSelect && !this.alwaysOpen) {
       this.shadowRoot.querySelector('.toggle-select').style.display = 'block'
@@ -634,6 +650,7 @@ export class MvSelect extends LitElement {
   }
 
   removeSelectedData(i) {
+    this.shadowRoot.querySelector('.mv-select-options').style.display ='block'
     let selector = '.data' + i
 
     let options = this.shadowRoot.querySelector(selector).dataset.options
@@ -691,9 +708,35 @@ export class MvSelect extends LitElement {
           el.style.display = 'block'
         })
 
-        this.shadowRoot.querySelector('.toggle-select').style.display = 'none'
+        // this.shadowRoot.querySelector('.toggle-select').style.display = 'none'
 
         this.itemRemoved = false
+
+
+      
+      
+      
+      
+  
+        let nbOptions =  this.shadowRoot.querySelector('.mv-select-item:last-child')
+
+
+
+        nbOptions = nbOptions.dataset.index
+
+        if (this.allValMultiSelect.length == nbOptions){
+
+          console.log(nbOptions)
+
+          this.shadowRoot.querySelector('.mv-select-options').style.display ='none'
+
+        }
+
+
+
+
+
+
 
         self.dispatchEvent(
           new CustomEvent('select-option', { detail: { option } }),
@@ -746,7 +789,7 @@ export class MvSelect extends LitElement {
       this.shadowRoot.querySelector('.toggle-select').style.display = 'block'
       this.shadowRoot.querySelector('.toggle-select').style.transform =
         'rotate(0deg)'
-      this.shadowRoot.querySelector('.toggle-select').style.marginLeft = '-25px'
+
     }
 
     if (!this.alwaysOpen) {

@@ -130,6 +130,7 @@ export class MvSelectDemo extends LitElement {
         font-weight: 500;
         color: red;
       }
+ 
     `
   }
 
@@ -262,7 +263,7 @@ export class MvSelectDemo extends LitElement {
             </mv-toast>
           </div>
 
-          <div class="input-group">
+          <div class="input-group" style="height:300px;display : block">
             <label>Multiple</label>
 
             <mv-select
@@ -272,7 +273,6 @@ export class MvSelectDemo extends LitElement {
               @select-option="${this.displayValues('multiSelect')}"
               @on-search="${this.searchValue('multiSelect')}"
               @on-clear="${this.clearValue('multiSelect')}"
-              always-open
               multi-select
               searchable
             ></mv-select>
