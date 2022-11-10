@@ -342,7 +342,7 @@ export class MvSelect extends LitElement {
         height: 20px;
         width: 20px;
         right: 25px;
-        background:none;
+        background: none;
       }
 
       .toggle-select {
@@ -376,9 +376,7 @@ export class MvSelect extends LitElement {
         display: block;
         padding: 0px 30px 0px 10px;
         margin-top: 9px;
-      }   
-
-
+      }
     `
   }
 
@@ -551,10 +549,6 @@ export class MvSelect extends LitElement {
   }
 
   firstUpdated() {
-    console.log(this.alwaysOpen)
-
-
-
     if (this.multiSelect) {
       this.shadowRoot.querySelector('.mv-select-input-group').style.display =
         'none'
@@ -638,7 +632,6 @@ export class MvSelect extends LitElement {
       this.allValMultiSelect.push(this.lastVal.value)
 
       this.value = { ...this.allValMultiSelect } // JSON.parse(JSON.stringify(this.allValMultiSelect))
-      console.log(this.allValMultiSelect)
 
       this.shadowRoot.querySelector('.select-one').style.display = 'none'
     } else {
@@ -652,7 +645,7 @@ export class MvSelect extends LitElement {
   }
 
   removeSelectedData(i) {
-    this.shadowRoot.querySelector('.mv-select-options').style.display ='block'
+    this.shadowRoot.querySelector('.mv-select-options').style.display = 'block'
     let selector = '.data' + i
 
     let options = this.shadowRoot.querySelector(selector).dataset.options
@@ -674,8 +667,6 @@ export class MvSelect extends LitElement {
 
     this.itemRemoved = true
     this.value = { ...this.allValMultiSelect }
-
-    console.log(this.value)
   }
 
   selectItem = (option) => {
@@ -714,31 +705,16 @@ export class MvSelect extends LitElement {
 
         this.itemRemoved = false
 
-
-      
-      
-      
-      
-  
-        let nbOptions =  this.shadowRoot.querySelector('.mv-select-item:last-child')
-
-
+        let nbOptions = this.shadowRoot.querySelector(
+          '.mv-select-item:last-child',
+        )
 
         nbOptions = nbOptions.dataset.index
 
-        if (this.allValMultiSelect.length == nbOptions){
-
-          console.log(nbOptions)
-
-          this.shadowRoot.querySelector('.mv-select-options').style.display ='none'
-
+        if (this.allValMultiSelect.length == nbOptions) {
+          this.shadowRoot.querySelector('.mv-select-options').style.display =
+            'none'
         }
-
-
-
-
-
-
 
         self.dispatchEvent(
           new CustomEvent('select-option', { detail: { option } }),
@@ -791,7 +767,6 @@ export class MvSelect extends LitElement {
       this.shadowRoot.querySelector('.toggle-select').style.display = 'block'
       this.shadowRoot.querySelector('.toggle-select').style.transform =
         'rotate(0deg)'
-
     }
 
     if (!this.alwaysOpen) {

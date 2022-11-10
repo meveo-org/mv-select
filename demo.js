@@ -130,7 +130,6 @@ export class MvSelectDemo extends LitElement {
         font-weight: 500;
         color: red;
       }
- 
     `
   }
 
