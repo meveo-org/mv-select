@@ -275,6 +275,7 @@ export class MvSelectDemo extends LitElement {
               @on-clear="${this.clearValue('multiSelect')}"
               multi-select
               searchable
+              always-open
             ></mv-select>
           </div>
 

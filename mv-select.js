@@ -342,6 +342,7 @@ export class MvSelect extends LitElement {
         height: 20px;
         width: 20px;
         right: 25px;
+        background:none;
       }
 
       .toggle-select {
@@ -563,6 +564,7 @@ export class MvSelect extends LitElement {
 
       this.shadowRoot.querySelector('.toggle-select').style.opacity = 0
       this.shadowRoot.querySelector('.toggle-select').style.marginLeft = '-40px'
+      this.shadowRoot.querySelector('.clear').style.right = '10px'
     }
     if (this.multiSelect && !this.alwaysOpen) {
       this.shadowRoot.querySelector('.toggle-select').style.display = 'block'
