@@ -96,7 +96,7 @@ export class MvSelect extends LitElement {
       .mv-select-input-group {
         background-color: var(--mv-select-input-group-bg-color);
         position: relative;
-        display: grid;
+        display: table;
         align-items: center;
         justify-items: start;
         border: var(--border);
