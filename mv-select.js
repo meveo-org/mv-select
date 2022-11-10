@@ -18,7 +18,7 @@ export class MvSelect extends LitElement {
       showInput: { type: Boolean, attribute: false, reflect: true },
       theme: { type: String },
       isFilter: { type: Boolean, attribute: 'is-filter' },
-      allValMultiSelect: { type: Array, attribute: true, reflect: true },
+      allValMultiSelect: { type: Array, attribute: false, state: true, reflect: true },
     }
   }
 
@@ -360,7 +360,7 @@ export class MvSelect extends LitElement {
         background-color: #3999c1;
       }
       .multiselect {
-        display: none;
+        /* display: none; */
         position: relative;
         top: 30px;
       }
@@ -433,7 +433,7 @@ export class MvSelect extends LitElement {
               @click="${this.toggleDropdown}"
               @keyup="${this.handleKeyPress}"
             >
-              ${this.showInput
+              ${this.showInput && !this.multiSelect
                 ? html`
                     <input
                       class="${inputClass}"
@@ -443,7 +443,24 @@ export class MvSelect extends LitElement {
                   `
                 : html`
                     <slot name="custom-value">
-                      <div class=${inputClass}>${label}</div>
+                      ${this.multiSelect ? html`
+                            <ul class="mv-select-values">
+                              ${this.allValMultiSelect.map(
+                                (i, index) =>
+                                  html`
+                                    <li
+                                      data-options=${i}
+                                      data-index=${index}
+                                      class="data${index} datas selected-${i}"
+                                      @click=${() => this.removeSelectedData(index)}
+                                    >
+                                      <slot name="custom-option">${i} ×</slot>
+                                    </li>
+                                  `,
+                              )}
+                            </ul>
+                        `
+                      : html`<div class=${inputClass}>${label}</div>`}
                     </slot>
                   `}
               ${!this.noClearButton
@@ -469,54 +486,13 @@ export class MvSelect extends LitElement {
                   `
                 : html``}
             </div>
-            ${this.open || alwaysOpen || this.multiSelect
+            ${this.open || alwaysOpen
               ? html`
-                  ${this.multiSelect
-                    ? html`
-                        <div class="mv-select-values-container">
-                          <ul class="mv-select-values">
-                            <li class="reset"></li>
-                            ${this.allValMultiSelect.map(
-                              (i, index) =>
-                                html`
-                                  <li
-                                    data-options=${i}
-                                    data-index=${index}
-                                    class="data${index} datas selected-${i}"
-                                    @click=${() =>
-                                      this.removeSelectedData(index)}
-                                  >
-                                    <slot name="custom-option">${i} ×</slot>
-                                  </li>
-                                `,
-                            )}
-                          </ul>
-
-                          <p
-                            class="select-one"
-                            @click="${this.toggleMultiSelectList}"
-                          >
-                            - Select one -
-                          </p>
-                          <button
-                            class="toggle-select"
-                            @click="${this.toggleMultiSelectList}"
-                          >
-                            ▼
-                          </button>
-
-                          <button @click="${this.clearSearch}" class="clear">
-                            ×
-                          </button>
-                        </div>
-                      `
-                    : html``}
                   ${options.length > 0
                     ? html`
                         <ul class="${optionsClass} ${multiSelectClass}">
                           ${options.map((item, index) => {
-                            const selectedClass =
-                              item === this.value ? ' selected' : ''
+                            const selectedClass = (item === this.value) || this.allValMultiSelect.includes(item.value) ? ' selected' : '';
                             const itemClass = `mv-select-item${selectedClass}`
                             return html`
                               <li
@@ -548,25 +524,6 @@ export class MvSelect extends LitElement {
     `
   }
 
-  firstUpdated() {
-    if (this.multiSelect) {
-      this.shadowRoot.querySelector('.mv-select-input-group').style.display =
-        'none'
-    }
-    if (this.alwaysOpen && this.multiSelect) {
-      this.shadowRoot.querySelector('.multiselect').style.display = 'block'
-
-      this.shadowRoot.querySelector('.toggle-select').style.opacity = 0
-      this.shadowRoot.querySelector('.toggle-select').style.marginLeft = '-40px'
-      this.shadowRoot.querySelector('.clear').style.right = '10px'
-    }
-    if (this.multiSelect && !this.alwaysOpen) {
-      this.shadowRoot.querySelector('.toggle-select').style.display = 'block'
-      this.shadowRoot.querySelector('.toggle-select').style.transform =
-        'rotate(0deg)'
-      this.shadowRoot.querySelector('.toggle-select').style.marginLeft = '-25px'
-    }
-  }
   connectedCallback() {
     if (this.hasEmptyOption) {
       this.emptyOption.label = this.emptyLabel || '- Select one -'
@@ -610,8 +567,6 @@ export class MvSelect extends LitElement {
       this.showInput = this.alwaysOpen ? true : this.open
       const self = this
       setTimeout(() => {
-        const inputElement = self.shadowRoot.querySelector('.mv-select-input')
-        inputElement.focus()
         self.dispatchEvent(
           new CustomEvent('on-search', {
             detail: { value: null, originalEvent },
@@ -621,23 +576,7 @@ export class MvSelect extends LitElement {
     }
   }
 
-  setValue = (event) => {
-    const {
-      detail: { option },
-    } = event
-
-    if (this.multiSelect == true) {
-      this.lastVal = option
-
-      this.allValMultiSelect.push(this.lastVal.value)
-
-      this.value = { ...this.allValMultiSelect } // JSON.parse(JSON.stringify(this.allValMultiSelect))
-
-      this.shadowRoot.querySelector('.select-one').style.display = 'none'
-    } else {
-      this.value = option
-    }
-
+  setValue = () => {
     this.open = false
     if (this.searchable) {
       this.showInput = false
@@ -645,134 +584,37 @@ export class MvSelect extends LitElement {
   }
 
   removeSelectedData(i) {
-    this.shadowRoot.querySelector('.mv-select-options').style.display = 'block'
-    let selector = '.data' + i
-
-    let options = this.shadowRoot.querySelector(selector).dataset.options
-
-    let selectedItem = '.selected-' + options
-    this.shadowRoot.querySelector(selectedItem).style.display = 'none'
-
     this.allValMultiSelect.splice(i, 1)
-
-    selector = '.' + options
-
-    this.shadowRoot.querySelector(selector).style.display = 'block'
-
-    const elements = this.shadowRoot.querySelectorAll('.datas')
-
-    Array.from(elements).forEach((el) => {
-      el.style.display = 'block'
-    })
-
     this.itemRemoved = true
     this.value = { ...this.allValMultiSelect }
   }
 
   selectItem = (option) => {
     const self = this
-    return (e) => {
-      if (e.ctrlKey) {
-        self.dispatchEvent(
-          new CustomEvent('select-option', { detail: { option } }),
-        )
-      } else if (this.multiSelect == true) {
-        let selector = '.' + option.value
-
-        let optionList = this.shadowRoot.querySelector(selector).dataset.option
-
-        selector = '.' + optionList
-
-        this.shadowRoot.querySelector(selector).style.display = 'block'
-
-        if (this.itemRemoved == true) {
-          let bubble = '.selected-' + optionList
-
-          if (this.shadowRoot.querySelector(bubble)) {
-            this.shadowRoot.querySelector(bubble).style.display = 'block'
-          }
-        }
-
-        this.shadowRoot.querySelector(selector).style.display = 'none'
-
-        const elements = this.shadowRoot.querySelectorAll('.datas')
-
-        Array.from(elements).forEach((el) => {
-          el.style.display = 'block'
-        })
-
-        // this.shadowRoot.querySelector('.toggle-select').style.display = 'none'
-
-        this.itemRemoved = false
-
-        let nbOptions = this.shadowRoot.querySelector(
-          '.mv-select-item:last-child',
-        )
-
-        nbOptions = nbOptions.dataset.index
-
-        if (this.allValMultiSelect.length == nbOptions) {
-          this.shadowRoot.querySelector('.mv-select-options').style.display =
-            'none'
-        }
-
-        self.dispatchEvent(
-          new CustomEvent('select-option', { detail: { option } }),
-        )
+    return () => {
+      if (self.multiSelect == true) {
+        self.allValMultiSelect.push(option.value)
+        self.value = [ ...this.allValMultiSelect ]
+  
       } else {
-        self.dispatchEvent(
-          new CustomEvent('select-option', { detail: { option } }),
-        )
+        self.value = option
       }
+
+      self.dispatchEvent(
+        new CustomEvent('select-option', { detail: { option: self.value } }),
+      )
     }
   }
-  toggleMultiSelectList() {
-    if (this.alwaysOpen) {
-    } else {
-      if (this.stateMultiSelect == true) {
-        this.shadowRoot.querySelector('.multiselect').style.display = 'none'
-        this.shadowRoot.querySelector('.toggle-select').style.transform =
-          'rotate(0deg)'
-        this.stateMultiSelect = false
-      } else {
-        this.shadowRoot.querySelector('.multiselect').style.display = 'block'
-        this.shadowRoot.querySelector('.toggle-select').style.transform =
-          'rotate(180deg)'
-        this.stateMultiSelect = true
-      }
-    }
-  }
+  
+
   clearSearch = (originalEvent) => {
     this.allValMultiSelect = []
     this.itemRemoved = false
 
-    const elements = this.shadowRoot.querySelectorAll('.mv-select-item')
-
-    Array.from(elements).forEach((el) => {
-      el.style.display = 'block'
-    })
-
-    const inputElement = this.shadowRoot.querySelector('.mv-select-input')
-
-    inputElement.value = ''
-
     this.dispatchEvent(
       new CustomEvent('on-clear', { detail: { originalEvent } }),
     )
-    inputElement.focus()
 
-    this.shadowRoot.querySelector('.select-one').style.display = 'block'
-
-    if (this.multiSelect && !this.alwaysOpen) {
-      this.shadowRoot.querySelector('.toggle-select').style.display = 'block'
-      this.shadowRoot.querySelector('.toggle-select').style.transform =
-        'rotate(0deg)'
-    }
-
-    if (!this.alwaysOpen) {
-      this.shadowRoot.querySelector('.multiselect').style.display = 'none'
-      this.stateMultiSelect = false
-    }
   }
 }
 
