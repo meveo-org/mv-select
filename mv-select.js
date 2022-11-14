@@ -358,6 +358,7 @@ export class MvSelect extends LitElement {
 
       .selected {
         background-color: #3999c1;
+        display:none;
       }
       .multiselect {
         /* display: none; */
@@ -491,6 +492,7 @@ export class MvSelect extends LitElement {
                     ? html`
                         <ul class="${optionsClass} ${multiSelectClass}">
                           ${options.map((item, index) => {
+                            
                             const selectedClass = (item === this.value) || this.allValMultiSelect.includes(item.value) ? ' selected' : '';
                             const itemClass = `mv-select-item${selectedClass}`
                             return html`
@@ -523,6 +525,11 @@ export class MvSelect extends LitElement {
     `
   }
 
+
+  firstUpdated(){
+
+
+  }
   connectedCallback() {
     if (this.hasEmptyOption) {
       this.emptyOption.label = this.emptyLabel || '- Select one -'
