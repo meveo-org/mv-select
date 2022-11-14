@@ -362,7 +362,6 @@ export class MvSelect extends LitElement {
       .multiselect {
         /* display: none; */
         position: relative;
-        top: 30px;
       }
       .select-one {
         position: absolute;
@@ -374,8 +373,8 @@ export class MvSelect extends LitElement {
       }
       .mv-select-values {
         display: block;
-        padding: 0px 30px 0px 10px;
-        margin-top: 9px;
+        padding: 0px 10px 0px 0px;
+        margin-top: 0px;
       }
     `
   }
