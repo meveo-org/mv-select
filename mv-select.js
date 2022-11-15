@@ -422,6 +422,7 @@ export class MvSelect extends LitElement {
     const label = this.value ? this.value.label : ''
     const value = this.showInput ? '' : label
 
+
     return html`
       <mv-click-away @clicked-away="${this.handleClickAway}">
         <div class="mv-select ">
@@ -489,11 +490,13 @@ export class MvSelect extends LitElement {
             ${this.open || alwaysOpen
               ? html`
                   ${options.length > 0
+                  
                     ? html`
                         <ul class="${optionsClass} ${multiSelectClass}">
                           ${options.map((item, index) => {
                             
                             const selectedClass = (item === this.value) || this.allValMultiSelect.includes(item.value) ? ' selected' : '';
+                            
                             const itemClass = `mv-select-item${selectedClass}`
                             return html`
                               <li
@@ -527,7 +530,6 @@ export class MvSelect extends LitElement {
 
 
   firstUpdated(){
-
 
   }
   connectedCallback() {
@@ -593,6 +595,7 @@ export class MvSelect extends LitElement {
     this.allValMultiSelect.splice(i, 1)
     this.itemRemoved = true
     this.value = { ...this.allValMultiSelect }
+    this.shadowRoot.querySelector('.mv-select-options').style.display = 'block'
   }
 
   selectItem = (option) => {
@@ -601,6 +604,21 @@ export class MvSelect extends LitElement {
       if (self.multiSelect == true) {
         self.allValMultiSelect.push(option.value)
         self.value = [ ...this.allValMultiSelect ]
+
+
+
+        let selectItems = this.shadowRoot.querySelector('.mv-select-item:last-child').dataset.index 
+        
+        if ((self.allValMultiSelect.length - 1) == selectItems){
+
+          this.shadowRoot.querySelector('.mv-select-options').style.display = 'none'
+
+        }
+
+ 
+ 
+
+   
   
       } else {
         self.value = option
@@ -616,6 +634,7 @@ export class MvSelect extends LitElement {
   clearSearch = (originalEvent) => {
     this.allValMultiSelect = []
     this.itemRemoved = false
+    this.shadowRoot.querySelector('.mv-select-options').style.display = 'block'
 
     this.dispatchEvent(
       new CustomEvent('on-clear', { detail: { originalEvent } }),
