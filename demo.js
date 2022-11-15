@@ -140,7 +140,6 @@ export class MvSelectDemo extends LitElement {
       default: null,
       searchable: null,
       alwaysOpen: null,
-      multiselect: true,
       multiSelect: true,
     }
     this.theme = 'light'
