@@ -323,7 +323,6 @@ export class MvSelectDemo extends LitElement {
       const {
         detail: { option },
       } = event
-      console.log("valeurs : ", option)
       this.value = { ...this.value, [name]: option }
     }
   }
@@ -334,7 +333,6 @@ export class MvSelectDemo extends LitElement {
       const {
         detail: { option },
       } = event
-      console.log("valeurs : ", option)
       this.value = { ...this.value, [name]: option }
     }
   }
