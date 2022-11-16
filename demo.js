@@ -271,6 +271,7 @@ export class MvSelectDemo extends LitElement {
               @select-option="${this.displayValues('multiSelect')}"
               @on-search="${this.searchValue('multiSelect')}"
               @on-clear="${this.clearValue('multiSelect')}"
+              @change="${this.removeValues('multiSelect')}"
               multi-select
               searchable
               always-open
@@ -285,7 +286,7 @@ export class MvSelectDemo extends LitElement {
             >
               <h4>Multiple value:</h4>
               <div class="message">
-                ${this.multiSelect}
+                ${this.value.multiSelect}
                 ${this.value &&
                 this.value.multiSelect &&
                 this.value.multiSelect.label}
@@ -322,10 +323,23 @@ export class MvSelectDemo extends LitElement {
       const {
         detail: { option },
       } = event
-
+      console.log("valeurs : ", option)
       this.value = { ...this.value, [name]: option }
     }
   }
+
+
+  removeValues = (name) => {
+    return (event) => {
+      const {
+        detail: { option },
+      } = event
+      console.log("valeurs : ", option)
+      this.value = { ...this.value, [name]: option }
+    }
+  }
+
+
 
   searchValue = (name) => {
     return (event) => {

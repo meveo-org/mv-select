@@ -459,7 +459,7 @@ export class MvSelect extends LitElement {
                                       data-index=${index}
                                       class="data${index} datas selected-${i}"
                                       @click=${() =>
-                                        this.removeSelectedData(index)}
+                                        this.removeItem(i,index)}
                                     >
                                       <slot name="custom-option">${i} ×</slot>
                                     </li>
@@ -509,23 +509,14 @@ export class MvSelect extends LitElement {
 
                             const itemClass = `mv-select-item${selectedClass}`
                             return html`
-                             
-                             
-                              
                              ${selectedClass != ' selected'
-
-
                                 ? html`  
-
-
                                 <li data-index="${index}"
                                 data-option="${item.value}"
                                 class="listitem${index} ${itemClass} ${item.value}"
                                 
                                @click="${this.selectItem(item)}"  
-
-
-                                
+                               
                               >
                                 <slot name="custom-option">${item.label}</slot>
                               </li>
@@ -580,7 +571,19 @@ export class MvSelect extends LitElement {
         this.value = this.emptyOption
       }
     }
-    this.addEventListener('select-option', this.setValue)
+    this.addEventListener('select-option',this.setValue )
+
+    
+    this.addEventListener('change', this.setValue);
+
+
+
+   // this.addEventListener('click', this.setValue)
+
+    //this.addEventListener('click', this.setValue)
+
+  //  const self = this.shadowRoot.querySelectorAll('li')
+  //  self.addEventListener('click', this.setValue)
 
     super.connectedCallback()
   }
@@ -632,18 +635,28 @@ export class MvSelect extends LitElement {
     }
   }
 
-  removeSelectedData(i) {
-   this.allValMultiSelect.splice(i, 1)
-    this.itemRemoved = true
+  // removeSelectedData(i,index) { 
+  //   this.allValMultiSelect.splice(index, 1)
+  //   this.value = [...this.allValMultiSelect]
+  //   console.log(this.value)
+  //   return () => {
+  //     this.dispatchEvent(
+  //     new CustomEvent('removeItem', { detail: { option: this.value } })
+  //       )
+  //     }
+  // }
 
-     this.value = [ ...this.allValMultiSelect ]
+  removeItem = (i, index) => {
+    const self = this
+    self.allValMultiSelect.splice(index, 1)
+    this.value = [...this.allValMultiSelect]
 
 
-
-     
-   
-
+    self.dispatchEvent(
+        new CustomEvent('change', { detail: { option: self.value } }),
+      )
   }
+
 
   selectItem = (option) => {
     const self = this
@@ -651,12 +664,6 @@ export class MvSelect extends LitElement {
       if (self.multiSelect == true) {
         self.allValMultiSelect.push(option.value)
         self.value = [...this.allValMultiSelect]
-
-
-
-
-
-
       } else {
         self.value = option
       }
