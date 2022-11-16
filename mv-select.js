@@ -1,4 +1,8 @@
-import { LitElement, html, css } from 'lit'
+import {
+  LitElement,
+  html,
+  css,
+} from 'lit'
 import { debounce } from './lib/debounce.js'
 import '@meveo-org/mv-click-away'
 
@@ -458,8 +462,7 @@ export class MvSelect extends LitElement {
                                       data-options=${i}
                                       data-index=${index}
                                       class="data${index} datas selected-${i}"
-                                      @click=${() =>
-                                        this.removeItem(i,index)}
+                                      @click=${() => this.removeItem(i, index)}
                                     >
                                       <slot name="custom-option">${i} ×</slot>
                                     </li>
@@ -509,39 +512,30 @@ export class MvSelect extends LitElement {
 
                             const itemClass = `mv-select-item${selectedClass}`
                             return html`
-                             ${selectedClass != ' selected'
-                                ? html`  
-                                <li data-index="${index}"
-                                data-option="${item.value}"
-                                class="listitem${index} ${itemClass} ${item.value}"
-                                
-                               @click="${this.selectItem(item)}"  
-                               
-                              >
-                                <slot name="custom-option">${item.label}</slot>
-                              </li>
-
-                              `
-                                 : html`
-                                 
-                                 
-                                 <li data-index="${index}"
-                                data-option="${item.value}"
-                                class="listitem${index} ${itemClass} ${item.value}"
-                                
-                     
-
-
-                                
-                              >
-                                <slot name="custom-option">${item.label}</slot>
-                              </li> 
-                                 
-                                 
-                                 
-                                 `}
-
-
+                              ${selectedClass != ' selected'
+                                ? html`
+                                    <li
+                                      data-index="${index}"
+                                      data-option="${item.value}"
+                                      class="listitem${index} ${itemClass} ${item.value}"
+                                      @click="${this.selectItem(item)}"
+                                    >
+                                      <slot name="custom-option">
+                                        ${item.label}
+                                      </slot>
+                                    </li>
+                                  `
+                                : html`
+                                    <li
+                                      data-index="${index}"
+                                      data-option="${item.value}"
+                                      class="listitem${index} ${itemClass} ${item.value}"
+                                    >
+                                      <slot name="custom-option">
+                                        ${item.label}
+                                      </slot>
+                                    </li>
+                                  `}
                             `
                           })}
                         </ul>
@@ -571,19 +565,9 @@ export class MvSelect extends LitElement {
         this.value = this.emptyOption
       }
     }
-    this.addEventListener('select-option',this.setValue )
+    this.addEventListener('select-option', this.setValue)
 
-    
-    this.addEventListener('change', this.setValue);
-
-
-
-   // this.addEventListener('click', this.setValue)
-
-    //this.addEventListener('click', this.setValue)
-
-  //  const self = this.shadowRoot.querySelectorAll('li')
-  //  self.addEventListener('click', this.setValue)
+    this.addEventListener('change', this.setValue)
 
     super.connectedCallback()
   }
@@ -635,28 +619,15 @@ export class MvSelect extends LitElement {
     }
   }
 
-  // removeSelectedData(i,index) { 
-  //   this.allValMultiSelect.splice(index, 1)
-  //   this.value = [...this.allValMultiSelect]
-  //   console.log(this.value)
-  //   return () => {
-  //     this.dispatchEvent(
-  //     new CustomEvent('removeItem', { detail: { option: this.value } })
-  //       )
-  //     }
-  // }
-
   removeItem = (i, index) => {
     const self = this
     self.allValMultiSelect.splice(index, 1)
     this.value = [...this.allValMultiSelect]
 
-
     self.dispatchEvent(
-        new CustomEvent('change', { detail: { option: self.value } }),
-      )
+      new CustomEvent('change', { detail: { option: self.value } }),
+    )
   }
-
 
   selectItem = (option) => {
     const self = this
@@ -677,7 +648,6 @@ export class MvSelect extends LitElement {
   clearSearch = (originalEvent) => {
     this.allValMultiSelect = []
     this.itemRemoved = false
-
 
     this.dispatchEvent(
       new CustomEvent('on-clear', { detail: { originalEvent } }),
