@@ -34,6 +34,7 @@ You can also check this [demo](https://select.meveo.org/)
   searchable                          // sets the input to be searchable
   has-empty-option                    // shows an empty option at the top of the options list
   no-clear-button                     // removes the clear button on the input
+  multi-select                        // option for multiselect
 ></mv-select>
 ```
 
