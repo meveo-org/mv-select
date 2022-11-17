@@ -105,7 +105,6 @@ export class MvSelect extends LitElement {
       .mv-select-input-group {
         background-color: var(--mv-select-input-group-bg-color);
         position: relative;
-        display: table;
         align-items: center;
         justify-items: start;
         border: var(--border);
@@ -114,6 +113,8 @@ export class MvSelect extends LitElement {
         max-height: var(--max-height);
         padding: var(--input-padding);
         width: var(--width);
+        display: table;
+        width:100%;
       }
 
       .mv-select-input {
@@ -622,7 +623,7 @@ export class MvSelect extends LitElement {
   removeItem = (i, index) => {
     const self = this
     self.allValMultiSelect.splice(index, 1)
-    this.value = [...this.allValMultiSelect]
+    this.value = {...this.allValMultiSelect}
 
     self.dispatchEvent(
       new CustomEvent('change', { detail: { option: self.value } }),
@@ -634,7 +635,7 @@ export class MvSelect extends LitElement {
     return () => {
       if (self.multiSelect == true) {
         self.allValMultiSelect.push(option.value)
-        self.value = [...this.allValMultiSelect]
+        self.value = {...this.allValMultiSelect}
       } else {
         self.value = option
       }
