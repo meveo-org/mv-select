@@ -7,6 +7,45 @@ import '@meveo-org/mv-toast'
 
 import './mv-select.js'
 
+// We can have an infinite levels of nested options here
+const MULTI_LEVEL_OPTIONS = [
+  {
+    label: 'Option 1',
+    value: 'option1',
+    children: [
+      {
+        label: "Child Option 1.1",
+        value: "option1.childOpt1"
+      }, 
+      {
+        label: "Child Option 1.2",
+        value: "option1.childOpt2"
+      }
+    ]
+  },
+  {
+    label: 'Option 2',
+    value: 'option2',
+    children: [
+      {
+        label: "Child Option 2.1",
+        value: "option2.childOpt1",
+        children: [
+          {
+            label: "Child option 2.1.1",
+            value: "option2.childOpt1.childOpt1"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    label: 'Option 3',
+    value: 'option3',
+  }
+]
+
+
 const ALL_OPTIONS = [
   {
     label: html`
