@@ -114,7 +114,7 @@ export class MvSelect extends LitElement {
         padding: var(--input-padding);
         width: var(--width);
         display: table;
-        width:100%;
+        width:90%;
       }
 
       .mv-select-input {
@@ -387,6 +387,7 @@ export class MvSelect extends LitElement {
         padding: 0px 10px 0px 0px;
         margin-top: 0px;
       }
+
     `
   }
 
@@ -623,7 +624,7 @@ export class MvSelect extends LitElement {
   removeItem = (i, index) => {
     const self = this
     self.allValMultiSelect.splice(index, 1)
-    this.value = {...this.allValMultiSelect}
+    this.value = [...this.allValMultiSelect]
 
     self.dispatchEvent(
       new CustomEvent('change', { detail: { option: self.value } }),
@@ -635,7 +636,7 @@ export class MvSelect extends LitElement {
     return () => {
       if (self.multiSelect == true) {
         self.allValMultiSelect.push(option.value)
-        self.value = {...this.allValMultiSelect}
+        self.value = [...this.allValMultiSelect]
       } else {
         self.value = option
       }

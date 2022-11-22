@@ -130,6 +130,9 @@ export class MvSelectDemo extends LitElement {
         font-weight: 500;
         color: red;
       }
+      .default-select-container{
+        align-items : first baseline;
+      }
     `
   }
 
