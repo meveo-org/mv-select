@@ -14,37 +14,36 @@ const MULTI_LEVEL_OPTIONS = [
     value: 'option1',
     children: [
       {
-        label: "Child Option 1.1",
-        value: "option1.childOpt1"
-      }, 
+        label: 'Child Option 1.1',
+        value: 'option1.childOpt1',
+      },
       {
-        label: "Child Option 1.2",
-        value: "option1.childOpt2"
-      }
-    ]
+        label: 'Child Option 1.2',
+        value: 'option1.childOpt2',
+      },
+    ],
   },
   {
     label: 'Option 2',
     value: 'option2',
     children: [
       {
-        label: "Child Option 2.1",
-        value: "option2.childOpt1",
+        label: 'Child Option 2.1',
+        value: 'option2.childOpt1',
         children: [
           {
-            label: "Child option 2.1.1",
-            value: "option2.childOpt1.childOpt1"
-          }
-        ]
-      }
-    ]
+            label: 'Child option 2.1.1',
+            value: 'option2.childOpt1.childOpt1',
+          },
+        ],
+      },
+    ],
   },
   {
     label: 'Option 3',
     value: 'option3',
-  }
+  },
 ]
-
 
 const ALL_OPTIONS = [
   {
@@ -169,8 +168,8 @@ export class MvSelectDemo extends LitElement {
         font-weight: 500;
         color: red;
       }
-      .default-select-container{
-        align-items : first baseline;
+      .default-select-container {
+        align-items: first baseline;
       }
     `
   }
@@ -182,7 +181,8 @@ export class MvSelectDemo extends LitElement {
       default: null,
       searchable: null,
       alwaysOpen: null,
-      multiSelect: true,
+      multiSelect: null,
+      multiLevel: null,
     }
     this.theme = 'light'
   }
@@ -314,6 +314,7 @@ export class MvSelectDemo extends LitElement {
               @on-search="${this.searchValue('multiSelect')}"
               @on-clear="${this.clearValue('multiSelect')}"
               @change="${this.removeValues('multiSelect')}"
+              multi-level
               multi-select
               searchable
               always-open
@@ -341,14 +342,52 @@ export class MvSelectDemo extends LitElement {
   }
 
   connectedCallback() {
-    this.options = Object.keys(this.options).reduce(
-      (options, key) => ({ ...options, [key]: this.resetOptions() }),
-      {},
-    )
+
+
+      this.options = Object.keys(this.options).reduce(
+        (options, key) => ({ ...options, [key]: this.resetOptions() }),
+        {},
+      )
+
     super.connectedCallback()
   }
 
-  resetOptions = () => [...ALL_OPTIONS.map((option) => ({ ...option }))]
+ // resetOptions = () => [...ALL_OPTIONS.map((option) => ({ ...option }))]
+
+  resetOptions() {
+    let data
+
+    // if ( multiSelect=true  ){
+    data = MULTI_LEVEL_OPTIONS
+    //}
+    //else{data= ALL_OPTIONS}
+
+    let label = []
+    let value = []
+
+    this.configurations = Object.keys(data).map(function (n) {
+      label.push(data[n].label)
+      value.push(data[n].value)
+
+      if (data[n].children) {
+        Object.keys(data[n].children).map(function (m) {
+          let labelSubMenu = data[n].children[m].label
+
+          label.push('- ' + labelSubMenu)
+          value.push(data[n].children[m].value)
+        })
+      }
+    })
+
+    let menu = []
+    for (let i = 0; i < label.length; i++) {
+      menu.push({ label: label[i], value: label[i] })
+    }
+
+    this.configurations = menu
+
+    return [...this.configurations]
+  }
 
   displayValue = (name) => {
     return (event) => {
@@ -369,7 +408,6 @@ export class MvSelectDemo extends LitElement {
     }
   }
 
-
   removeValues = (name) => {
     return (event) => {
       const {
@@ -378,8 +416,6 @@ export class MvSelectDemo extends LitElement {
       this.value = { ...this.value, [name]: option }
     }
   }
-
-
 
   searchValue = (name) => {
     return (event) => {

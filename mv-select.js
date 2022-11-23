@@ -405,6 +405,7 @@ export class MvSelect extends LitElement {
     this.showInput = false
     this.alwaysOpen = false
     this.multiSelect = false
+    this.multiLevel = false
     this.hasEmptyOption = false
     this.noClearButton = false
     this.theme = 'light'
@@ -422,6 +423,7 @@ export class MvSelect extends LitElement {
     const dropdownClass = alwaysOpen ? ' no-dropdown' : ''
     const searchableClass = this.searchable ? 'searchable' : 'static'
     const multiSelectClass = this.multiSelect ? 'multiselect' : 'no-multiselect'
+    const multiLevelClass = this.multiLevel ? 'multilevel' : 'no-multilevel'
     const inputClass = `mv-select-input ${searchableClass}${dropdownClass}${clearClass}`
     const clearButtonClass = `mv-select-clear-button${dropdownClass}`
     const dropdownButtonClass = `mv-select-dropdown-button ${
@@ -504,7 +506,7 @@ export class MvSelect extends LitElement {
               ? html`
                   ${options.length > 0
                     ? html`
-                        <ul class="${optionsClass} ${multiSelectClass}">
+                        <ul class="${optionsClass} ${multiSelectClass} ${multiLevelClass}">
                           ${options.map((item, index) => {
                             const selectedClass =
                               item === this.value ||
@@ -559,7 +561,24 @@ export class MvSelect extends LitElement {
     `
   }
 
-  firstUpdated() {}
+  firstUpdated() {
+
+
+    if (this.multiLevel) {
+      this.showInput = this.alwaysOpen ? true : this.open
+       const self = this
+       setTimeout(() => {
+        self.dispatchEvent(
+           new CustomEvent('on-search', {
+             detail: { value: null, originalEvent },
+           }),
+         )
+       }, 0)
+     }
+
+
+
+  }
   connectedCallback() {
     if (this.hasEmptyOption) {
       this.emptyOption.label = this.emptyLabel || '- Select one -'
@@ -602,10 +621,10 @@ export class MvSelect extends LitElement {
   toggleDropdown = (originalEvent) => {
     this.open = !this.open
     if (this.searchable) {
-      this.showInput = this.alwaysOpen ? true : this.open
+     this.showInput = this.alwaysOpen ? true : this.open
       const self = this
       setTimeout(() => {
-        self.dispatchEvent(
+       self.dispatchEvent(
           new CustomEvent('on-search', {
             detail: { value: null, originalEvent },
           }),
@@ -654,6 +673,46 @@ export class MvSelect extends LitElement {
     this.dispatchEvent(
       new CustomEvent('on-clear', { detail: { originalEvent } }),
     )
+  }
+
+
+
+
+
+  
+  resetOptions() {
+    let data
+
+    // if ( multiSelect=true  ){
+    data = MULTI_LEVEL_OPTIONS
+    //}
+    //else{data= ALL_OPTIONS}
+
+    let label = []
+    let value = []
+
+    this.configurations = Object.keys(data).map(function (n) {
+      label.push(data[n].label)
+      value.push(data[n].value)
+
+      if (data[n].children) {
+        Object.keys(data[n].children).map(function (m) {
+          let labelSubMenu = data[n].children[m].label
+
+          label.push('- ' + labelSubMenu)
+          value.push(data[n].children[m].value)
+        })
+      }
+    })
+
+    let menu = []
+    for (let i = 0; i < label.length; i++) {
+      menu.push({ label: label[i], value: label[i] })
+    }
+
+    this.configurations = menu
+
+    return [...this.configurations]
   }
 }
 
