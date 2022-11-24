@@ -646,7 +646,7 @@ export class MvSelect extends LitElement {
     this.value = [...this.allValMultiSelect]
 
     self.dispatchEvent(
-      new CustomEvent('change', { detail: { option: self.value } }),
+      new CustomEvent('change', { detail: { option: this.value } }),
     )
   }
 
@@ -678,42 +678,8 @@ export class MvSelect extends LitElement {
 
 
 
-
   
-  resetOptions() {
-    let data
 
-    // if ( multiSelect=true  ){
-    data = MULTI_LEVEL_OPTIONS
-    //}
-    //else{data= ALL_OPTIONS}
-
-    let label = []
-    let value = []
-
-    this.configurations = Object.keys(data).map(function (n) {
-      label.push(data[n].label)
-      value.push(data[n].value)
-
-      if (data[n].children) {
-        Object.keys(data[n].children).map(function (m) {
-          let labelSubMenu = data[n].children[m].label
-
-          label.push('- ' + labelSubMenu)
-          value.push(data[n].children[m].value)
-        })
-      }
-    })
-
-    let menu = []
-    for (let i = 0; i < label.length; i++) {
-      menu.push({ label: label[i], value: label[i] })
-    }
-
-    this.configurations = menu
-
-    return [...this.configurations]
-  }
 }
 
 customElements.define('mv-select', MvSelect)

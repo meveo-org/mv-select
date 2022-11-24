@@ -45,43 +45,6 @@ const MULTI_LEVEL_OPTIONS = [
   },
 ]
 
-const ALL_OPTIONS = [
-  {
-    label: html`
-      <mv-fa icon="smile" regular></mv-fa>
-      Option 1
-    `,
-    value: 'option1',
-  },
-  {
-    label: 'Option 2',
-    value: 'option2',
-  },
-  {
-    label: 'Option 3',
-    value: 'option3',
-  },
-  {
-    label: 'Option 12',
-    value: 'option12',
-  },
-  {
-    label: 'Option 23',
-    value: 'option23',
-  },
-  {
-    label: 'Option 13',
-    value: 'option13',
-  },
-  {
-    label: 'Option 22',
-    value: 'option22',
-  },
-  {
-    label: 'Option 33',
-    value: 'option33',
-  },
-]
 
 export class MvSelectDemo extends LitElement {
   static get properties() {
@@ -182,7 +145,6 @@ export class MvSelectDemo extends LitElement {
       searchable: null,
       alwaysOpen: null,
       multiSelect: null,
-      multiLevel: null,
     }
     this.theme = 'light'
   }
@@ -307,6 +269,7 @@ export class MvSelectDemo extends LitElement {
             <label>Multiple</label>
 
             <mv-select
+            id="mutiselect"
               .value="${this.value.multiSelect}"
               .options="${this.options.multiSelect}"
               .theme="${theme}"
@@ -314,7 +277,7 @@ export class MvSelectDemo extends LitElement {
               @on-search="${this.searchValue('multiSelect')}"
               @on-clear="${this.clearValue('multiSelect')}"
               @change="${this.removeValues('multiSelect')}"
-              multi-level
+
               multi-select
               searchable
               always-open
@@ -343,7 +306,7 @@ export class MvSelectDemo extends LitElement {
 
   connectedCallback() {
 
-
+   // let test = this.shadowRoot.getElementById("multiselect")
       this.options = Object.keys(this.options).reduce(
         (options, key) => ({ ...options, [key]: this.resetOptions() }),
         {},
@@ -352,42 +315,75 @@ export class MvSelectDemo extends LitElement {
     super.connectedCallback()
   }
 
- // resetOptions = () => [...ALL_OPTIONS.map((option) => ({ ...option }))]
 
-  resetOptions() {
+
+
+
+
+
+ 
+  resetOptions = () => {
+
+
     let data
-
+    
     // if ( multiSelect=true  ){
     data = MULTI_LEVEL_OPTIONS
     //}
     //else{data= ALL_OPTIONS}
-
+    
     let label = []
     let value = []
-
+    
     this.configurations = Object.keys(data).map(function (n) {
       label.push(data[n].label)
       value.push(data[n].value)
-
+    
       if (data[n].children) {
         Object.keys(data[n].children).map(function (m) {
           let labelSubMenu = data[n].children[m].label
-
-          label.push('- ' + labelSubMenu)
+    
+          label.push('-'+labelSubMenu)
           value.push(data[n].children[m].value)
+    
+    
+          if (data[n].children[m].children) {
+            Object.keys(data[n].children[m].children).map(function (l) {
+              let labelSubSubMenu = data[n].children[m].children[l].label
+        
+              label.push('--'+labelSubSubMenu)
+              value.push(data[n].children[m].children[l].value)
+            })
+          }
+    
+    
+    
         })
       }
+      
     })
-
+    
     let menu = []
     for (let i = 0; i < label.length; i++) {
       menu.push({ label: label[i], value: label[i] })
     }
+    
+    this.value = menu
+    
+    return [...this.value]
+    
+    }
 
-    this.configurations = menu
 
-    return [...this.configurations]
-  }
+
+
+
+
+
+
+
+
+
 
   displayValue = (name) => {
     return (event) => {
@@ -413,7 +409,13 @@ export class MvSelectDemo extends LitElement {
       const {
         detail: { option },
       } = event
+
+      
       this.value = { ...this.value, [name]: option }
+      
+
+
+      
     }
   }
 
@@ -424,7 +426,7 @@ export class MvSelectDemo extends LitElement {
       } = event
       this.options = {
         ...this.options,
-        [name]: ALL_OPTIONS.filter((option) => {
+        [name]: MULTI_LEVEL_OPTIONS.filter((option) => {
           const searchableLabel =
             option.label.type === 'html'
               ? new DOMParser()
@@ -436,7 +438,10 @@ export class MvSelectDemo extends LitElement {
               searchableLabel.includes(value) || option.value.includes(value)
             )
           }
-          return option
+
+
+          resetOptions()
+
         }),
       }
     }
