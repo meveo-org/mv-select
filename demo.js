@@ -269,11 +269,10 @@ export class MvSelectDemo extends LitElement {
             <label>Multiple</label>
 
             <mv-select
-            id="mutiselect"
+              class="mutiselect"
               .value="${this.value.multiSelect}"
               .options="${this.options.multiSelect}"
               .theme="${theme}"
-              @select-option="${this.displayValues('multiSelect')}"
               @on-search="${this.searchValue('multiSelect')}"
               @on-clear="${this.clearValue('multiSelect')}"
               @change="${this.removeValues('multiSelect')}"
@@ -308,7 +307,7 @@ export class MvSelectDemo extends LitElement {
 
    // let test = this.shadowRoot.getElementById("multiselect")
       this.options = Object.keys(this.options).reduce(
-        (options, key) => ({ ...options, [key]: this.resetOptions() }),
+        (options, key) => ({ ...options, [key]: MULTI_LEVEL_OPTIONS }),
         {},
       )
 
@@ -317,62 +316,6 @@ export class MvSelectDemo extends LitElement {
 
 
 
-
-
-
-
- 
-  resetOptions = () => {
-
-
-    let data
-    
-    // if ( multiSelect=true  ){
-    data = MULTI_LEVEL_OPTIONS
-    //}
-    //else{data= ALL_OPTIONS}
-    
-    let label = []
-    let value = []
-    
-    this.configurations = Object.keys(data).map(function (n) {
-      label.push(data[n].label)
-      value.push(data[n].value)
-    
-      if (data[n].children) {
-        Object.keys(data[n].children).map(function (m) {
-          let labelSubMenu = data[n].children[m].label
-    
-          label.push('-'+labelSubMenu)
-          value.push(data[n].children[m].value)
-    
-    
-          if (data[n].children[m].children) {
-            Object.keys(data[n].children[m].children).map(function (l) {
-              let labelSubSubMenu = data[n].children[m].children[l].label
-        
-              label.push('--'+labelSubSubMenu)
-              value.push(data[n].children[m].children[l].value)
-            })
-          }
-    
-    
-    
-        })
-      }
-      
-    })
-    
-    let menu = []
-    for (let i = 0; i < label.length; i++) {
-      menu.push({ label: label[i], value: label[i] })
-    }
-    
-    this.value = menu
-    
-    return [...this.value]
-    
-    }
 
 
 
@@ -440,7 +383,7 @@ export class MvSelectDemo extends LitElement {
           }
 
 
-          resetOptions()
+
 
         }),
       }
@@ -457,7 +400,7 @@ export class MvSelectDemo extends LitElement {
         originalEvent.stopPropagation()
       }
       self.value = { ...self.value, [name]: null }
-      self.options = { ...self.options, [name]: this.resetOptions() }
+     // self.options = { ...self.options, [name]: this.resetOptions() }
     }
   }
 
