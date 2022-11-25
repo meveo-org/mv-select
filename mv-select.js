@@ -383,6 +383,21 @@ export class MvSelect extends LitElement {
         padding: 0px 10px 0px 0px;
         margin-top: 0px;
       }
+      .level1 {
+        text-indent: 5px;
+      }
+      .level2 {
+        text-indent: 10px;
+      }
+      .level3 {
+        text-indent: 15px;
+      }
+      .level4 {
+        text-indent: 20px;
+      }
+      .level5 {
+        text-indent: 25px;
+      }
     `
   }
 
@@ -438,7 +453,7 @@ export class MvSelect extends LitElement {
               class="mv-select-input-group${this.isFilter && this.value.value
                 ? ' active'
                 : ''}"
-              @click="${this.toggleDropdown}"
+              @click="${!this.multiSelect ? this.toggleDropdown : ''}"
               @keyup="${this.handleKeyPress}"
             >
               ${this.showInput && !this.multiSelect
@@ -505,40 +520,7 @@ export class MvSelect extends LitElement {
                           class="${optionsClass} ${multiSelectClass} ${multiLevelClass}"
                         >
                           ${options.map((item, index) => {
-                            const selectedClass =
-                              item === this.value ||
-                              this.allValMultiSelect.includes(item.value)
-                                ? ' selected'
-                                : ''
-
-                            const itemClass = `mv-select-item${selectedClass}`
-                            return html`
-                              ${selectedClass != ' selected'
-                                ? html`
-                                    <li
-                                
-                                      data-index="${index}"
-                                      data-option="${item.value}"
-                                      class="listitem${index} ${itemClass} ${item.value} ${item.level} ${item.group}"
-                                      @click="${this.selectItem(item)}"
-                                    >
-                                      <slot name="custom-option">
-                                        ${item.label}
-                                      </slot>
-                                    </li>
-                                  `
-                                : html`
-                                    <li
-                                      data-index="${index}"
-                                      data-option="${item.value}"
-                                      class="listitem${index} ${itemClass} ${item.value}"
-                                    >
-                                      <slot name="custom-option">
-                                        ${item.label}
-                                      </slot>
-                                    </li>
-                                  `}
-                            `
+                            return this.renderOption(item, index)
                           })}
                         </ul>
                       `
@@ -559,21 +541,7 @@ export class MvSelect extends LitElement {
     `
   }
 
-  firstUpdated() {
-    this.resetOptions()
-    /*
-    if (this.multiLevel) {
-      this.showInput = this.alwaysOpen ? true : this.open
-       const self = this
-       setTimeout(() => {
-        self.dispatchEvent(
-           new CustomEvent('on-search', {
-             detail: { value: null, originalEvent },
-           }),
-         )
-       }, 0)
-     }*/
-  }
+  firstUpdated() {}
   connectedCallback() {
     if (this.hasEmptyOption) {
       this.emptyOption.label = this.emptyLabel || '- Select one -'
@@ -621,7 +589,7 @@ export class MvSelect extends LitElement {
       setTimeout(() => {
         self.dispatchEvent(
           new CustomEvent('on-search', {
-            detail: { value: null, originalEvent },
+            detail: { value: null, option },
           }),
         )
       }, 0)
@@ -643,33 +611,68 @@ export class MvSelect extends LitElement {
     self.dispatchEvent(
       new CustomEvent('change', { detail: { option: this.value } }),
     )
+  }
 
+  renderOption(item, index, level = 0) {
+    const selectedClass =
+      item === this.value || this.allValMultiSelect.includes(item.label)
+        ? 'selected'
+        : ''
+
+    const itemClass = `mv-select-item ${selectedClass}`
+    const onClick = !selectedClass ? this.selectItem(item) : null
+    return html`
+      <li
+        data-index="${index}"
+        data-option="${item.value}"
+        class="listitem${index} ${itemClass} ${item.value} level${level}"
+        @click="${onClick}"
+      >
+        <slot name="custom-option">
+          ${item.label}
+        </slot>
+      </li>
+
+      ${item.children &&
+      item.children.length > 0 &&
+      item.children.map((child, subIndex) =>
+        this.renderOption(child, index + '.' + subIndex, level + 1),
+      )}
+    `
+  }
+
+  pushOptionToList(option) {
+    const found = this.allValMultiSelect.find(
+      (element) => element == option.label,
+    )
+    if (!found) {
+      this.allValMultiSelect.push(option.label)
+    }
+
+    if (option.children && option.children.length > 0) {
+      for (let child of option.children) {
+        this.pushOptionToList(child)
+      }
+    }
   }
 
   selectItem = (option) => {
     const self = this
     return () => {
       if (self.multiSelect == true) {
-        self.allValMultiSelect.push(option.value)
-
-
-        console.log(option.level + option.group)
-
-       // let GroupToAdd = option.level
-      // let selector = ('.'+option.group) 
-       // this.shadowRoot.querySelectorAll(selector).style.display = 'hide'
-
-
-       //TODO
-
+        this.pushOptionToList(option)
         self.value = [...this.allValMultiSelect]
+
+        self.dispatchEvent(
+          new CustomEvent('change', { detail: { option: this.value } }),
+        )
       } else {
         self.value = option
-      }
 
-      self.dispatchEvent(
-        new CustomEvent('select-option', { detail: { option: self.value } }),
-      )
+        self.dispatchEvent(
+          new CustomEvent('select-option', { detail: { option: self.value } }),
+        )
+      }
     }
   }
 
@@ -677,64 +680,9 @@ export class MvSelect extends LitElement {
     this.allValMultiSelect = []
     this.itemRemoved = false
 
-
     this.dispatchEvent(
       new CustomEvent('on-clear', { detail: { originalEvent } }),
     )
-  }
-
-  resetOptions = () => {
-    let data
-
-    data = this.options
-
-    let label = []
-    let value = []
-    let level = []
-    let group = []
-
-    this.configurations = Object.keys(data).map(function (n) {
-      label.push(data[n].label)
-      value.push(data[n].value)
-      group.push('group'+n)
-      level.push('level1')
-
-      if (data[n].children) {
-        Object.keys(data[n].children).map(function (m) {
-          let labelSubMenu = data[n].children[m].label
-
-      
-          label.push('-' +labelSubMenu)
-          value.push(data[n].children[m].value)
-          group.push('group'+n)
-          level.push('level2')
-
-          if (data[n].children[m].children) {
-            Object.keys(data[n].children[m].children).map(function (l) {
-              let labelSubSubMenu = data[n].children[m].children[l].label
-
-              label.push('--' + labelSubSubMenu)
-              value.push(data[n].children[m].children[l].value)
-              group.push('group'+n)
-              level.push('level3')
-            })
-          }
-        })
-      }
-    })
-
-    let menu = []
-    for (let i = 0; i < label.length; i++) {
-      menu.push({ label: label[i], value: label[i], level: level[i], group: group[i] })
-    }
-
-    //this.allValMultiSelect = [...this.value]
-
-    // this.allValMultiSelect = menu
-
-    this.options = [...menu]
-
-    console.log(this.allValMultiSelect)
   }
 }
 
