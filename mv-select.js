@@ -542,7 +542,10 @@ export class MvSelect extends LitElement {
     `
   }
 
-  firstUpdated() {}
+  firstUpdated() {
+
+    this.selected=false
+  }
   connectedCallback() {
     if (this.hasEmptyOption) {
       this.emptyOption.label = this.emptyLabel || '- Select one -'
@@ -614,14 +617,15 @@ export class MvSelect extends LitElement {
     )
   }
 
-  renderOption(item, index, level = 0) {
+  renderOption(item, index, level = 0,i) {
     const selectedClass =
       item === this.value || this.allValMultiSelect.includes(item.label)
         ? 'selected'
         : ''
 
     const itemClass = `mv-select-item ${selectedClass}`
-    const onClick = !selectedClass ? this.selectItem(item) : null
+    const onClick = this.selectItem(item,i,index,selectedClass, item.value)
+
     return html`
       <li
         data-index="${index}"
@@ -637,7 +641,7 @@ export class MvSelect extends LitElement {
       ${item.children &&
       item.children.length > 0 &&
       item.children.map((child, subIndex) =>
-        this.renderOption(child, index + '.' + subIndex, level + 1),
+        this.renderOption(child, index, level + 1),
       )}
     `
   }
@@ -650,23 +654,43 @@ export class MvSelect extends LitElement {
       this.allValMultiSelect.push(option.label)
     }
 
-    if (option.children && option.children.length > 0) {
+   if (option.children && option.children.length > 0) {
       for (let child of option.children) {
         this.pushOptionToList(child)
       }
     }
+
+
   }
 
-  selectItem = (option) => {
+  selectItem = (item,i,index,selectedClass) => {
     const self = this
+  
     return () => {
       if (self.multiSelect == true) {
-        this.pushOptionToList(option)
-        self.value = [...this.allValMultiSelect]
 
+        console.log(selectedClass)
+
+        
+        this.pushOptionToList(item)
+        self.value = [...this.allValMultiSelect]
         self.dispatchEvent(
           new CustomEvent('change', { detail: { option: this.value } }),
         )
+
+        if(selectedClass === 'selected'){
+
+
+            this.removeItem(item)
+
+    
+
+      }
+
+
+
+
+
       } else {
         self.value = option
 
@@ -685,6 +709,13 @@ export class MvSelect extends LitElement {
       new CustomEvent('on-clear', { detail: { originalEvent } }),
     )
   }
+
+
+  
+
+
+
+
 }
 
 customElements.define('mv-select', MvSelect)
