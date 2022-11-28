@@ -249,7 +249,7 @@ export class MvSelectDemo extends LitElement {
             </mv-toast>
           </div>
 
-          <div class="input-group">
+          <div class="input-group"  style="height:400px;display : block">
             <label>Always open</label>
 
             <mv-select

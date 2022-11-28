@@ -94,8 +94,9 @@ export class MvSelect extends LitElement {
       }
 
       .mv-select-contents.always-open {
-        position: relative;
+        position: absolute;
         height: unset;
+        width:100%;
       }
 
       .mv-select-input-group {
