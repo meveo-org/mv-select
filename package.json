@@ -1,6 +1,6 @@
 {
   "name": "@meveo-org/mv-select",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "MvSelect is a Meveo component (based on lit-element) that renders a select input.",
   "main": "mv-select.js",
   "directories": {
