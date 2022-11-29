@@ -25,16 +25,17 @@ You can also check this [demo](https://select.meveo.org/)
 
 ```html
 <mv-select
-  .value="${this.value}"              // the current selected value
-  .options="${this.options}"          // the options for the dropdown
-  @select-option="${event => {...}}"  // the custom event dispatched when an option is selected
-  @on-search="${event => {...}}"      // the custom event dispatched when a search term is typed in
-  @on-clear="${event => {...}}"       // the custom event dispatched when the selected option is cleared
-  always-open                         // sets the dropdown to be always open
-  searchable                          // sets the input to be searchable
-  has-empty-option                    // shows an empty option at the top of the options list
-  no-clear-button                     // removes the clear button on the input
-  multi-select                        // option for multiselect
+  .value="${this.value}"                            // the current selected value
+  .options="${this.options}"                        // the options for the dropdown
+  @select-option="${event => {...}}"                // the custom event dispatched when an option is selected
+  @on-search="${event => {...}}"                    // the custom event dispatched when a search term is typed in
+  @on-clear="${event => {...}}"                     // the custom event dispatched when the selected option is cleared
+  @change="${this.removeValues('multiSelect')}"     // the custom event dispatched when the selected option is removed in multiselect
+  always-open                                       // sets the dropdown to be always open
+  searchable                                        // sets the input to be searchable
+  has-empty-option                                  // shows an empty option at the top of the options list
+  no-clear-button                                   // removes the clear button on the input
+  multi-select                                      // option for multiselect
 ></mv-select>
 ```
 
