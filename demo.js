@@ -47,7 +47,10 @@ const MULTI_LEVEL_OPTIONS = [
 
 const ALL_OPTIONS = [
   {
-    label: 'Option 1',
+    label: html`
+      <mv-fa icon="smile" regular></mv-fa>
+      Option 1
+    `,
     value: 'option1',
   },
   {
@@ -57,6 +60,26 @@ const ALL_OPTIONS = [
   {
     label: 'Option 3',
     value: 'option3',
+  },
+  {
+    label: 'Option 12',
+    value: 'option12',
+  },
+  {
+    label: 'Option 23',
+    value: 'option23',
+  },
+  {
+    label: 'Option 13',
+    value: 'option13',
+  },
+  {
+    label: 'Option 22',
+    value: 'option22',
+  },
+  {
+    label: 'Option 33',
+    value: 'option33',
   },
 ]
 
@@ -159,6 +182,7 @@ export class MvSelectDemo extends LitElement {
       searchable: null,
       alwaysOpen: null,
       multiSelect: null,
+      multiLevel: null,
     }
     this.theme = 'light'
   }
@@ -249,7 +273,7 @@ export class MvSelectDemo extends LitElement {
             </mv-toast>
           </div>
 
-          <div class="input-group"  style="height:400px;display : block">
+          <div class="input-group" style="height:400px;display : block">
             <label>Always open</label>
 
             <mv-select
@@ -283,17 +307,16 @@ export class MvSelectDemo extends LitElement {
             <label>Multiple</label>
 
             <mv-select
-              class="mutiselect"
               .value="${this.value.multiSelect}"
-              .options="${MULTI_LEVEL_OPTIONS}"
+              .options="${this.options.multiSelect}"
               .theme="${theme}"
-              @select-option="${this.displayValue('multiSelect')}"
+              @select-option="${this.displayValue('multiselect')}"
               @on-search="${this.searchValue('multiSelect')}"
               @on-clear="${this.clearValue('multiSelect')}"
               @change="${this.removeValues('multiSelect')}"
               multi-select
-              searchable
-              always-open
+
+
             ></mv-select>
           </div>
 
@@ -305,7 +328,7 @@ export class MvSelectDemo extends LitElement {
             >
               <h4>Multiple value:</h4>
               <div class="message">
-                ${this.value.multiSelect && this.value.multiSelect.map(i => i.label)}           
+              ${this.value.multiSelect && this.value.multiSelect.map(i => i.label)}
               </div>
             </mv-toast>
           </div>
@@ -315,7 +338,6 @@ export class MvSelectDemo extends LitElement {
   }
 
   connectedCallback() {
-    // let test = this.shadowRoot.getElementById("multiselect")
     this.options = Object.keys(this.options).reduce(
       (options, key) => ({ ...options, [key]: MULTI_LEVEL_OPTIONS }),
       {},
@@ -329,7 +351,7 @@ export class MvSelectDemo extends LitElement {
       const {
         detail: { option },
       } = event
-      console.log(option)
+
       this.value = { ...this.value, [name]: option }
     }
   }
@@ -339,9 +361,8 @@ export class MvSelectDemo extends LitElement {
       const {
         detail: { option },
       } = event
-
-      console.log(option)
       this.value = { ...this.value, [name]: option }
+      console.log(this.value)
     }
   }
 
@@ -350,8 +371,6 @@ export class MvSelectDemo extends LitElement {
       const {
         detail: { option },
       } = event
-
-      console.log(option);
       this.value = { ...this.value, [name]: option }
     }
   }
@@ -375,6 +394,7 @@ export class MvSelectDemo extends LitElement {
               searchableLabel.includes(value) || option.value.includes(value)
             )
           }
+          return option
         }),
       }
     }
@@ -390,7 +410,6 @@ export class MvSelectDemo extends LitElement {
         originalEvent.stopPropagation()
       }
       self.value = { ...self.value, [name]: null }
-      // self.options = { ...self.options, [name]: this.resetOptions() }
     }
   }
 
