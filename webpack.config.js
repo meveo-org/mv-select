@@ -6,7 +6,7 @@ module.exports = {
   entry: './demo.js',
   mode: 'production',
   output: {
-    path: path.resolve(__dirname, './dist'),
+    path: path.resolve(__dirname, './docs'),
     filename: 'demo-mv-select.js',
   },
   plugins: [new HtmlWebpackPlugin({
