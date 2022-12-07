@@ -9,6 +9,14 @@ module.exports = {
     path: path.resolve(__dirname, './docs'),
     filename: 'demo-mv-select.js',
   },
+  devServer: {
+    devMiddleware: {
+      writeToDisk: true,
+    },
+    client: {
+      overlay: false
+    }
+  },
   plugins: [new HtmlWebpackPlugin({
     template: "./index.html"
   })],

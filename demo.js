@@ -44,51 +44,13 @@ const MULTI_LEVEL_OPTIONS = [
     value: 'option3',
   },
 ]
-
-const ALL_OPTIONS = [
-  {
-    label: html`
-      <mv-fa icon="smile" regular></mv-fa>
-      Option 1
-    `,
-    value: 'option1',
-  },
-  {
-    label: 'Option 2',
-    value: 'option2',
-  },
-  {
-    label: 'Option 3',
-    value: 'option3',
-  },
-  {
-    label: 'Option 12',
-    value: 'option12',
-  },
-  {
-    label: 'Option 23',
-    value: 'option23',
-  },
-  {
-    label: 'Option 13',
-    value: 'option13',
-  },
-  {
-    label: 'Option 22',
-    value: 'option22',
-  },
-  {
-    label: 'Option 33',
-    value: 'option33',
-  },
-]
-
 export class MvSelectDemo extends LitElement {
   static get properties() {
     return {
       value: { type: Object, attribute: false, reflect: true },
       options: { type: Array, attribute: false, reflect: true },
       theme: { type: String, attribute: true },
+      data: { type: Array, state: true }
     }
   }
 
@@ -100,6 +62,7 @@ export class MvSelectDemo extends LitElement {
         --mv-select-font-size: 16px;
         --mv-select-input-padding: 6px;
         --mv-select-border: 1px solid #4e686d;
+        display: flex;
       }
 
       mv-container label {
@@ -110,8 +73,10 @@ export class MvSelectDemo extends LitElement {
       }
 
       mv-container {
-        --mv-container-min-width: 780px;
+        // --mv-container-min-width: 780px;
         --mv-container-max-width: 780px;
+        margin-left: 5px;
+        margin-right: 5px;
       }
 
       mv-button {
@@ -171,6 +136,16 @@ export class MvSelectDemo extends LitElement {
       .default-select-container {
         align-items: first baseline;
       }
+
+      .options {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .options-container {
+        --mv-container-position: sticky;
+      }
     `
   }
 
@@ -185,33 +160,22 @@ export class MvSelectDemo extends LitElement {
       multiLevel: null,
     }
     this.theme = 'light'
+    this.data = MULTI_LEVEL_OPTIONS;
+  }
+
+  updateValue() {
+    this.data = JSON.parse(this.shadowRoot.querySelector("textarea").value);
   }
 
   render() {
     const { theme } = this
     return html`
-      <fieldset>
-        <legend>Theme</legend>
-        <label>
-          <input
-            type="radio"
-            name="theme"
-            value="light"
-            checked
-            @change="${this.changeTheme}"
-          />
-          Light
-        </label>
-        <label>
-          <input
-            type="radio"
-            name="theme"
-            value="dark"
-            @change="${this.changeTheme}"
-          />
-          Dark
-        </label>
-      </fieldset>
+      <mv-container class="options-container">
+        <div class="options">
+          <textarea rows="30" cols="40">${JSON.stringify(this.data, null, 2)}</textarea>
+          <button @click="${this.updateValue}">Submit</button>
+        </div>
+      </mv-container>
       <mv-container .theme="${theme}">
         <div class="contents">
           <div class="input-group">
@@ -219,7 +183,7 @@ export class MvSelectDemo extends LitElement {
             <div class="default-select-container">
               <mv-select
                 .value="${this.value.default}"
-                .options="${this.options.default}"
+                .options="${this.data}"
                 .theme="${theme}"
                 @select-option="${this.displayValue('default')}"
                 has-empty-option
@@ -250,7 +214,7 @@ export class MvSelectDemo extends LitElement {
             <label>Searchable</label>
             <mv-select
               .value="${this.value.searchable}"
-              .options="${this.options.searchable}"
+              .options="${this.data}"
               .theme="${theme}"
               @select-option="${this.displayValue('searchable')}"
               @on-search="${this.searchValue('searchable')}"
@@ -278,7 +242,7 @@ export class MvSelectDemo extends LitElement {
 
             <mv-select
               .value="${this.value.alwaysOpen}"
-              .options="${this.options.alwaysOpen}"
+              .options="${this.data}"
               .theme="${theme}"
               @select-option="${this.displayValue('alwaysOpen')}"
               @on-search="${this.searchValue('alwaysOpen')}"
@@ -308,7 +272,7 @@ export class MvSelectDemo extends LitElement {
 
             <mv-select
               .value="${this.value.multiSelect}"
-              .options="${this.options.multiSelect}"
+              .options="${this.data}"
               .theme="${theme}"
               @select-option="${this.displayValue('multiselect')}"
               @on-search="${this.searchValue('multiSelect')}"
@@ -335,15 +299,6 @@ export class MvSelectDemo extends LitElement {
         </div>
       </mv-container>
     `
-  }
-
-  connectedCallback() {
-    this.options = Object.keys(this.options).reduce(
-      (options, key) => ({ ...options, [key]: MULTI_LEVEL_OPTIONS }),
-      {},
-    )
-
-    super.connectedCallback()
   }
 
   displayValue = (name) => {
