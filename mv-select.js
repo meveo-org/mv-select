@@ -230,6 +230,7 @@ export class MvSelect extends LitElement {
       .mv-select-options.open {
         box-shadow: 3px 3px 10px 0px rgba(58, 58, 58, 0.6);
         z-index: 10;
+        position: absolute;
       }
 
       .mv-select-item {
@@ -389,19 +390,19 @@ export class MvSelect extends LitElement {
         margin-top: 0px;
       }
       .level1 {
-        text-indent: 5px;
-      }
-      .level2 {
-        text-indent: 10px;
-      }
-      .level3 {
         text-indent: 15px;
       }
+      .level2 {
+        text-indent: 25px;
+      }
+      .level3 {
+        text-indent: 35px;
+      }
       .level4 {
-        text-indent: 20px;
+        text-indent: 45px;
       }
       .level5 {
-        text-indent: 25px;
+        text-indent: 55px;
       }
     `
   }
