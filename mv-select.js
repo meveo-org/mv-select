@@ -374,7 +374,7 @@ export class MvSelect extends LitElement {
       }
       .multiselect {
         /* display: none; */
-        position: relative;
+        position: relative !important;
       }
       .select-one {
         position: absolute;
@@ -439,7 +439,7 @@ export class MvSelect extends LitElement {
     const dropdownClass = alwaysOpen ? ' no-dropdown' : ''
     const searchableClass = this.searchable ? 'searchable' : 'static'
     const multiSelectClass = this.multiSelect ? 'multiselect' : 'no-multiselect'
-    const multiLevelClass = this.multiLevel ? 'multilevel' : 'no-multilevel'
+    const multiLevelClass = this.multiLevel ? 'multilevel' : ''
     const inputClass = `mv-select-input ${searchableClass}${dropdownClass}${clearClass}`
     const clearButtonClass = `mv-select-clear-button${dropdownClass}`
     const dropdownButtonClass = `mv-select-dropdown-button ${
@@ -633,9 +633,19 @@ export class MvSelect extends LitElement {
     self.allValMultiSelect.splice(index, 1)
     this.value = [...this.allValMultiSelect]
 
+    if (this.value.length== 0)
+    {  
+  
+      this.alwaysOpen = false
+
+
+
+    }
     self.dispatchEvent(
       new CustomEvent('change', { detail: { option: this.value } }),
     )
+
+
   }
 
   renderOption(item, index, level = 0, i) {
@@ -687,6 +697,7 @@ export class MvSelect extends LitElement {
       if (self.multiSelect == true) {
         this.pushOptionToList(option)
         self.value = [...this.allValMultiSelect]
+        this.alwaysOpen = true
         self.dispatchEvent(
           new CustomEvent('change', { detail: { option: this.value } }),
         )
@@ -703,6 +714,7 @@ export class MvSelect extends LitElement {
   clearSearch = (originalEvent) => {
     this.allValMultiSelect = []
     this.itemRemoved = false
+    this.alwaysOpen = false
 
     this.dispatchEvent(
       new CustomEvent('on-clear', { detail: { originalEvent } }),

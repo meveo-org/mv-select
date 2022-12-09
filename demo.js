@@ -315,8 +315,6 @@ export class MvSelectDemo extends LitElement {
               @on-clear="${this.clearValue('multiSelect')}"
               @change="${this.removeValues('multiSelect')}"
               multi-select
-
-
             ></mv-select>
           </div>
 
