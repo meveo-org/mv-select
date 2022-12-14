@@ -110,7 +110,7 @@ export class MvSelect extends LitElement {
         justify-items: start;
         border: var(--border);
         border-radius: var(--border-radius);
-        min-height: var(--max-height);
+        min-height: 30px;
         max-height: var(--max-height);
         padding: var(--input-padding);
         width: var(--width);
@@ -372,10 +372,11 @@ export class MvSelect extends LitElement {
         background-color: #3999c1;
         //display: none;
       }
-      .multiselect {
-        /* display: none; */
+      ul.open {
+
         position: relative !important;
       }
+
       .select-one {
         position: absolute;
         bottom: -2px;
@@ -550,6 +551,9 @@ export class MvSelect extends LitElement {
   firstUpdated() {
 
 
+
+
+
     if (this.multiLevel) {
       this.showInput = this.alwaysOpen ? true : this.open
        const self = this
@@ -626,6 +630,10 @@ export class MvSelect extends LitElement {
     }
   }
 
+
+
+
+   
   removeItem = (i) => {
     const self = this
     const index = self.allValMultiSelect.findIndex((item) => i === item)
@@ -635,8 +643,16 @@ export class MvSelect extends LitElement {
 
     if (this.value.length== 0)
     {  
-  
+
+
+      this.allValMultiSelect = []
+      this.itemRemoved = false
       this.alwaysOpen = false
+
+  
+      this.dispatchEvent(
+        new CustomEvent('change', { detail: { option:this.value } }),
+      )
 
 
 

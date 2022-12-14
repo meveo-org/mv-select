@@ -139,7 +139,7 @@ export class MvSelectDemo extends LitElement {
       .default-select-container {
         display: grid;
         grid-template-columns: auto 50px;
-        align-items: center;
+        align-items: flex-start !important;
       }
 
       .message {
