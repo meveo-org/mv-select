@@ -110,7 +110,7 @@ export class MvSelect extends LitElement {
         justify-items: start;
         border: var(--border);
         border-radius: var(--border-radius);
-        min-height: var(--max-height);
+        min-height: 30px;
         max-height: var(--max-height);
         padding: var(--input-padding);
         width: var(--width);
@@ -372,10 +372,11 @@ export class MvSelect extends LitElement {
         background-color: #3999c1;
         //display: none;
       }
-      .multiselect {
-        /* display: none; */
-        position: relative;
+      ul.open {
+
+        position: relative !important;
       }
+
       .select-one {
         position: absolute;
         bottom: -2px;
@@ -440,7 +441,7 @@ export class MvSelect extends LitElement {
     const dropdownClass = alwaysOpen ? ' no-dropdown' : ''
     const searchableClass = this.searchable ? 'searchable' : 'static'
     const multiSelectClass = this.multiSelect ? 'multiselect' : 'no-multiselect'
-    const multiLevelClass = this.multiLevel ? 'multilevel' : 'no-multilevel'
+    const multiLevelClass = this.multiLevel ? 'multilevel' : ''
     const inputClass = `mv-select-input ${searchableClass}${dropdownClass}${clearClass}`
     const clearButtonClass = `mv-select-clear-button${dropdownClass}`
     const dropdownButtonClass = `mv-select-dropdown-button ${
@@ -551,6 +552,9 @@ export class MvSelect extends LitElement {
   firstUpdated() {
 
 
+
+
+
     if (this.multiLevel) {
       this.showInput = this.alwaysOpen ? true : this.open
        const self = this
@@ -627,6 +631,10 @@ export class MvSelect extends LitElement {
     }
   }
 
+
+
+
+   
   removeItem = (i) => {
     const self = this
     const index = self.allValMultiSelect.findIndex((item) => i === item)
@@ -634,9 +642,27 @@ export class MvSelect extends LitElement {
     self.allValMultiSelect.splice(index, 1)
     this.value = [...this.allValMultiSelect]
 
+    if (this.value.length== 0)
+    {  
+
+
+      this.allValMultiSelect = []
+      this.itemRemoved = false
+      this.alwaysOpen = false
+
+  
+      this.dispatchEvent(
+        new CustomEvent('change', { detail: { option:this.value } }),
+      )
+
+
+
+    }
     self.dispatchEvent(
       new CustomEvent('change', { detail: { option: this.value } }),
     )
+
+
   }
 
   renderOption(item, index, level = 0, i) {
@@ -688,6 +714,7 @@ export class MvSelect extends LitElement {
       if (self.multiSelect == true) {
         this.pushOptionToList(option)
         self.value = [...this.allValMultiSelect]
+        this.alwaysOpen = true
         self.dispatchEvent(
           new CustomEvent('change', { detail: { option: this.value } }),
         )
@@ -704,6 +731,7 @@ export class MvSelect extends LitElement {
   clearSearch = (originalEvent) => {
     this.allValMultiSelect = []
     this.itemRemoved = false
+    this.alwaysOpen = false
 
     this.dispatchEvent(
       new CustomEvent('on-clear', { detail: { originalEvent } }),
