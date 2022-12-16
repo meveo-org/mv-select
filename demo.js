@@ -38,6 +38,8 @@ const MULTI_LEVEL_OPTIONS = [
         ],
       },
     ],
+    selectable : 'false'
+
   },
   {
     label: 'Option 3',
