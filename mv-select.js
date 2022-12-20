@@ -1,8 +1,4 @@
-import {
-  LitElement,
-  html,
-  css,
-} from 'lit'
+import { LitElement, html, css } from 'lit'
 import { debounce } from './lib/debounce.js'
 import '@meveo-org/mv-click-away'
 
@@ -115,7 +111,7 @@ export class MvSelect extends LitElement {
         padding: var(--input-padding);
         width: var(--width);
         display: table;
-        width:95%;
+        width: 95%;
       }
 
       .mv-select-input {
@@ -373,7 +369,6 @@ export class MvSelect extends LitElement {
         //display: none;
       }
       ul.open {
-
         position: relative !important;
       }
 
@@ -486,9 +481,10 @@ export class MvSelect extends LitElement {
                                       class="data${index} datas selected-${i}"
                                       @click=${() => this.removeItem(i, index)}
                                     >
-                                    <slot name="custom-option">
+                                      <slot name="custom-option">
                                         ${i.label} ×
-                                      </slot>                                    </li>
+                                      </slot>
+                                    </li>
                                   `,
                               )}
                             </ul>
@@ -524,7 +520,8 @@ export class MvSelect extends LitElement {
             ${this.open || alwaysOpen
               ? html`
                   ${options.length > 0
-                    ? html`                        <ul
+                    ? html`
+                        <ul
                           class="${optionsClass} ${multiSelectClass} ${multiLevelClass}"
                         >
                           ${options.map((item, index) => {
@@ -550,25 +547,17 @@ export class MvSelect extends LitElement {
   }
 
   firstUpdated() {
-
-
-
-
-
     if (this.multiLevel) {
       this.showInput = this.alwaysOpen ? true : this.open
-       const self = this
-       setTimeout(() => {
+      const self = this
+      setTimeout(() => {
         self.dispatchEvent(
-           new CustomEvent('on-search', {
-             detail: { value: null, originalEvent },
-           }),
-         )
-       }, 0)
-     }
-
-
-
+          new CustomEvent('on-search', {
+            detail: { value: null, originalEvent },
+          }),
+        )
+      }, 0)
+    }
   }
   connectedCallback() {
     if (this.hasEmptyOption) {
@@ -612,10 +601,10 @@ export class MvSelect extends LitElement {
   toggleDropdown = (originalEvent) => {
     this.open = !this.open
     if (this.searchable) {
-     this.showInput = this.alwaysOpen ? true : this.open
+      this.showInput = this.alwaysOpen ? true : this.open
       const self = this
       setTimeout(() => {
-       self.dispatchEvent(
+        self.dispatchEvent(
           new CustomEvent('on-search', {
             detail: { value: null, originalEvent },
           }),
@@ -631,45 +620,44 @@ export class MvSelect extends LitElement {
     }
   }
 
-
-
-
-   
   removeItem = (i) => {
-    const self = this
-    const index = self.allValMultiSelect.findIndex((item) => i === item)
+    this.unselect(i)
 
-    self.allValMultiSelect.splice(index, 1)
-    this.value = [...this.allValMultiSelect]
-
-    if (this.value.length== 0)
-    {  
-
-
+    if (this.value.length == 0) {
       this.allValMultiSelect = []
       this.itemRemoved = false
       this.alwaysOpen = false
 
-  
       this.dispatchEvent(
-        new CustomEvent('change', { detail: { option:this.value } }),
+        new CustomEvent('change', { detail: { option: this.value } }),
       )
-
-
-
     }
     self.dispatchEvent(
       new CustomEvent('change', { detail: { option: this.value } }),
     )
+  }
 
+  isSelected(item) {
+    if (this.allValMultiSelect.includes(item)) {
+      return true
+    }
 
+    if (item.children) {
+      for (let child of item.children) {
+        if (this.isSelected(child)) {
+          const isSelectable =
+            item.selectable === undefined ? true : item.selectable
+          if (!isSelectable) {
+            return true
+          }
+        }
+      }
+    }
   }
 
   renderOption(item, index, level = 0, i) {
     const selectedClass =
-      item === this.value || this.allValMultiSelect.includes(item)
-        ? 'selected'
-        : ''
+      item === this.value || this.isSelected(item) ? 'selected' : ''
 
     const itemClass = `mv-select-item ${selectedClass}`
     const onClick = !selectedClass
@@ -698,9 +686,11 @@ export class MvSelect extends LitElement {
   pushOptionToList(option) {
     const found = this.allValMultiSelect.find((element) => element == option)
     if (!found) {
-      if((!option.selectable)||(option.selectable!="false")){
-      this.allValMultiSelect.push(option)
-    }
+      const isSelectable =
+        option.selectable === undefined ? true : option.selectable
+      if (isSelectable) {
+        this.allValMultiSelect.push(option)
+      }
     }
 
     if (option.children && option.children.length > 0) {
@@ -722,12 +712,12 @@ export class MvSelect extends LitElement {
         )
       } else {
         self.value = option
-   
 
-      self.dispatchEvent(
-        new CustomEvent('select-option', { detail: { option: self.value } }),
-      )
-    }   }
+        self.dispatchEvent(
+          new CustomEvent('select-option', { detail: { option: self.value } }),
+        )
+      }
+    }
   }
 
   clearSearch = (originalEvent) => {
@@ -739,8 +729,20 @@ export class MvSelect extends LitElement {
       new CustomEvent('on-clear', { detail: { originalEvent } }),
     )
   }
+  unselect(i) {
+    const self = this
+    const index = self.allValMultiSelect.findIndex((item) => i === item)
 
+    self.allValMultiSelect.splice(index, 1)
 
+    if (i.children) {
+      for (let child of i.children) {
+        this.unselect(child)
+      }
+    }
+
+    this.value = [...this.allValMultiSelect]
+  }
 }
 
 customElements.define('mv-select', MvSelect)

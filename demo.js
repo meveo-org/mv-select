@@ -38,7 +38,7 @@ const MULTI_LEVEL_OPTIONS = [
         ],
       },
     ],
-    selectable : 'false'
+    selectable : false
 
   },
   {
