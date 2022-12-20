@@ -115,7 +115,7 @@ export class MvSelect extends LitElement {
         padding: var(--input-padding);
         width: var(--width);
         display: table;
-        width:90%;
+        width:95%;
       }
 
       .mv-select-input {
@@ -387,6 +387,7 @@ export class MvSelect extends LitElement {
       }
       .mv-select-values {
         display: block;
+        width: 90%;
         padding: 0px 10px 0px 0px;
         margin-top: 0px;
       }
