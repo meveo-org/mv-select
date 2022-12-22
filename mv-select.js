@@ -94,7 +94,6 @@ export class MvSelect extends LitElement {
       }
 
       .mv-select-contents.always-open {
-        position: absolute;
         height: unset;
         width: 100%;
       }
@@ -107,6 +106,7 @@ export class MvSelect extends LitElement {
         border: var(--border);
         border-radius: var(--border-radius);
         min-height: 30px;
+        line-height:30px;
         max-height: var(--max-height);
         padding: var(--input-padding);
         width: var(--width);
@@ -334,6 +334,8 @@ export class MvSelect extends LitElement {
         font-size: 11px;
         border: solid 1px #ccc;
         list-style: none;
+        height: 15px;
+        line-height: 15px;
       }
       .reset {
         display: none !important;
