@@ -7130,7 +7130,7 @@
       .mv-select-options.open {
         box-shadow: 3px 3px 10px 0px rgba(58, 58, 58, 0.6);
         z-index: 10;
-        position: absolute;
+        position: relative;
       }
 
       .mv-select-item {
