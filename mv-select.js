@@ -105,13 +105,11 @@ export class MvSelect extends LitElement {
         justify-items: start;
         border: var(--border);
         border-radius: var(--border-radius);
-        min-height: 30px;
         line-height:30px;
         max-height: var(--max-height);
         padding: var(--input-padding);
         width: var(--width);
         display: table;
-        width: 95%;
       }
 
       .mv-select-input {
@@ -226,7 +224,8 @@ export class MvSelect extends LitElement {
       .mv-select-options.open {
         box-shadow: 3px 3px 10px 0px rgba(58, 58, 58, 0.6);
         z-index: 10;
-        position: relative;
+        position: absolute;
+        transform: translateY(var(--total-height));
       }
 
       .mv-select-item {
@@ -369,9 +368,6 @@ export class MvSelect extends LitElement {
       .selected {
         background-color: #3999c1;
         //display: none;
-      }
-      ul.open {
-        position: relative !important;
       }
 
       .select-one {
