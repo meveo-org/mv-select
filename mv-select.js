@@ -704,7 +704,7 @@ export class MvSelect extends LitElement {
       if (self.multiSelect == true) {
         this.pushOptionToList(option)
         self.value = [...this.allValMultiSelect]
-        this.alwaysOpen = true
+        //this.alwaysOpen = true
         self.dispatchEvent(
           new CustomEvent('change', { detail: { option: this.value } }),
         )
