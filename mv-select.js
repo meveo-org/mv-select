@@ -110,6 +110,7 @@ export class MvSelect extends LitElement {
         padding: var(--input-padding);
         width: var(--width);
         display: table;
+        height:50px;
       }
 
       .mv-select-input {
