@@ -24,6 +24,7 @@ export class MvSelect extends LitElement {
         state: true,
         reflect: true,
       },
+      disabled: { type: Boolean, attribute: 'disabled'}
     }
   }
 
@@ -424,6 +425,7 @@ export class MvSelect extends LitElement {
     this.allValMultiSelect = []
     this.option = []
     this.stateMultiSelect = false
+    this.disabled = false;
   }
 
   render() {
@@ -577,6 +579,8 @@ export class MvSelect extends LitElement {
       if (!this.value && this.hasEmptyOption) {
         this.value = this.emptyOption
       }
+    } else if (name == 'disabled' && newValue === '' && this.open){
+      this.open = false;
     }
     super.attributeChangedCallback(name, oldValue, newValue)
   }
@@ -598,17 +602,19 @@ export class MvSelect extends LitElement {
   }, 300)
 
   toggleDropdown = (originalEvent) => {
-    this.open = !this.open
-    if (this.searchable) {
-      this.showInput = this.alwaysOpen ? true : this.open
-      const self = this
-      setTimeout(() => {
-        self.dispatchEvent(
-          new CustomEvent('on-search', {
-            detail: { value: null, originalEvent },
-          }),
-        )
-      }, 0)
+    if(!this.disabled) {
+      this.open = !this.open
+      if (this.searchable) {
+        this.showInput = this.alwaysOpen ? true : this.open
+        const self = this
+        setTimeout(() => {
+          self.dispatchEvent(
+            new CustomEvent('on-search', {
+              detail: { value: null, originalEvent },
+            }),
+          )
+        }, 0)
+      }
     }
   }
 
