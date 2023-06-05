@@ -36,6 +36,7 @@ You can also check this [demo](https://select.meveo.org/)
   has-empty-option                                  // shows an empty option at the top of the options list
   no-clear-button                                   // removes the clear button on the input
   multi-select                                      // option for multiselect
+  disabled                                          // disable the component (no onClick and closes modal if open)
 ></mv-select>
 ```
 
